@@ -13,3 +13,5 @@ Laravel 5.5|5.6 | 5.7
 
 # Installation
 <h3>Quick installation</h3> 
+
+``composer require hamahang/ltm``
