@@ -1,0 +1,252 @@
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body .main_content {
+    height: 100%;
+    background-color: #eee;
+    border-left: 2px solid #dddddd;
+    border-right: 2px solid #dddddd;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.vertical_form_wizard_labels {
+    height: 100%;
+    background-color: #cecece;
+    border-left: 1px solid #bbb;
+}
+
+.form_message_area {
+    display: none;
+    padding: 20px 40px;
+    margin: 10px 10px;
+    border-right: 2px solid grey;
+    width: 100%;
+    position: relative;
+}
+
+.message_show {
+    display: block;
+}
+
+.message_info {
+    background-color: #b1f3ff;
+    border-right: 4px solid #32bad3;
+    color: #076d93;
+    font-weight: bold;
+}
+
+.message_info .close_message_btn {
+    background-color: #b1f3ff;
+    padding: 2px 4px;
+    border-radius: 0;
+    border: 1px solid #32bad3;
+    color: #076d93;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+.message_success {
+    background-color: #b8f9d0;
+    border-right: 4px solid #00c06a;
+    color: #00c06a;
+    font-weight: bold;
+}
+
+.message_success .close_message_btn {
+    background-color: #b8f9d0;
+    padding: 2px 4px;
+    border-radius: 0;
+    border: 1px solid #00c06a;
+    color: #00805d;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+.message_error {
+    background-color: #f7d9e0;
+    border-right: 4px solid #cf1d49;
+    color: #a61a39;
+    font-weight: bold;
+}
+
+.message_error .close_message_btn {
+    background-color: #f7d9e0;
+    padding: 2px 4px;
+    border-radius: 0;
+    border: 1px solid #cf1d49;
+    color: #a61a39;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+.message_warning {
+    background-color: #f9e9c8;
+    border-right: 4px solid #f1a407;
+    color: #674605;
+    font-weight: bold;
+}
+
+.message_warning .close_message_btn {
+    background-color: #f9e9c8;
+    padding: 2px 4px;
+    border-radius: 0;
+    border: 1px solid #f1a407;
+    color: #674605;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+.red_star {
+    color: #D50000;
+}
+
+header {
+    background-color: #1f7a9a;
+    height: 120px;
+    background-image: url(https://freezones.hamahang-co.ir/assets/images/main_logo_bg_light.png);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header .header_left {
+    color: #c7ecff;
+    width: 50%;
+    padding-left: 75px;
+    position: relative;
+}
+
+header .header_left .header_menu {
+
+}
+
+header .header_menu ul {
+    margin-top: 25px;
+}
+
+header .header_menu ul li {
+    float: right;
+    padding: 4px 7px;
+    font-size: 12px;
+    list-style: none;
+}
+
+header .header_menu .active {
+    background-color: #1b6683;
+}
+
+header .header_menu ul li a {
+    color: #d9d9d9;
+    text-decoration: none;
+}
+
+header .header_menu ul li a:hover {
+    color: #b1f3ff;
+}
+
+header .header_menu ul li a:visited {
+    color: #b1b7ba;
+}
+
+.text_title_login_page{
+    color: #999999;
+}
+
+.text_description_login_page
+{
+    text-decoration: none;
+    text-align: justify;
+}
+.text_description_login_page ul li
+{
+    list-style: none !important;
+}
+.description-page ul{
+    margin: 10px 0px;
+    border: 1px solid #e5e5e5;
+    padding: 10px;
+    background: #fffdfd;
+    list-style: none
+}
+.description-page ul li i {
+    font-size: 11px;
+    color: #c5bf8d;
+    margin: 0 0 0 5px;
+}
+.description-page h4 {
+    color: #888;
+    font-size: 16px;
+    margin: 15px 0;
+}
+.description-page ul li {
+    margin: 5px 0 5px 0;
+    line-height: 25px;
+    text-align: justify;
+    color: #5e5e5e;
+}
+.description-page ul li strong {
+    display: block;
+    border: 1px solid #aaa;
+    padding: 5px 15px;
+    margin: 10px 0;
+    background: #fff;
+    overflow: hidden;
+    border-right: 3px solid #c5bf8d;
+}
+.description-page  strong {
+    border: 1px solid #c6b9b9;
+    padding: 10px;
+    display: block;
+    background: #f4f1f1;
+}
+.loading_select {
+    width: 50px;
+}
+#loading_select_div{
+    display: none;
+}

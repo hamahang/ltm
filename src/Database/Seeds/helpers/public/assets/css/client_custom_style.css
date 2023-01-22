@@ -1,0 +1,59 @@
+.btn-operation{
+    padding: 0px 7px !important;
+    margin-left: 3px;
+    font-size: 14px;
+}
+#base_motel{
+    display: none;
+}
+#div_base_price_additional{
+    display: none;
+}
+#div_base_price_additional_edit{
+    display: none;
+}
+.relative{
+    position: relative;
+}
+/*.form_message_area {
+    display: none;
+    padding: 20px 40px;
+    margin: 10px 10px;
+    border-right: 2px solid grey;
+    width: 100%;
+    position: relative;
+}*/
+.message_error {
+    background-color: #f7d9e0;
+    border-right: 4px solid #cf1d49;
+    color: #a61a39;
+    font-weight: bold;
+}
+
+.message_error .close_message_btn {
+    background-color: #f7d9e0;
+    padding: 2px 4px;
+    border-radius: 0;
+    border: 1px solid #cf1d49;
+    color: #a61a39;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+#base_btn_footer_room_insert{
+    display: none;
+}
+#base_btn_footer_room_update{
+    display: none;
+}
+.filter_span{
+    font-size: 25px;
+    color: #525252;
+    margin-top: 10px;
+    cursor: pointer;
+}
+#div_base_filter_hotel{
+    padding:15px 10px;
+    background-color: #fff;
+    display: none;
+}

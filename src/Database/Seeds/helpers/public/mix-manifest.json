@@ -1,0 +1,12 @@
+{
+    "/assets/build/vue_chat.js": "/assets/build/vue_chat.js",
+    "/assets/build/vue_chat.css": "/assets/build/vue_chat.css",
+    "/assets/build/common/js/init_data.min.js": "/assets/build/common/js/init_data.min.js",
+    "/assets/build/frontend/css/init_core.min.css": "/assets/build/frontend/css/init_core.min.css",
+    "/assets/build/frontend/js/init_core.min.js": "/assets/build/frontend/js/init_core.min.js",
+    "/assets/build/backend/css/init_core.min.css": "/assets/build/backend/css/init_core.min.css",
+    "/assets/build/backend/js/init_core.min.js": "/assets/build/backend/js/init_core.min.js",
+    "/assets/build/backend/js/dashboard.min.js": "/assets/build/backend/js/dashboard.min.js",
+    "/assets/build/client/css/init_core.min.css": "/assets/build/client/css/init_core.min.css",
+    "/assets/build/client/js/init_core.min.js": "/assets/build/client/js/init_core.min.js"
+}

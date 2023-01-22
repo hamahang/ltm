@@ -1,0 +1,39 @@
+{
+    "name": "hamahang/LTM",
+    "description": "Official hamahang-co.ir Laravel Task Managers Package",
+    "keywords": ["laravel", "hamahang", "Task System", "hamahang-co.ir","هماهنگ"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hamahang-co",
+            "email": "support@hamahang-co.ir"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Hamahang\\LTM\\": "src/"
+        },
+        "files": [
+            "src/Helpers/Functions/System.php",
+            "src/Helpers/Functions/API.php",
+            "src/Helpers/Functions/DBF.php"
+        ]
+
+    },
+    "require": {
+        "yajra/laravel-datatables-oracle": ">=8.0",
+        "artincms/laravel_file_manager": "dev-master",
+        "artincms/laravel_visitable": "dev-master",
+        "artincms/laravel_tagable": "dev-master",
+        "artincms/laravel_faq": "dev-master",
+        "artincms/laravel_user_management": "dev-master",
+        "artincms/laravel_basicdata_manager": "dev-master"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hamahang\\LTM\\TASKServiceProvider"
+            ]
+        }
+    }
+}

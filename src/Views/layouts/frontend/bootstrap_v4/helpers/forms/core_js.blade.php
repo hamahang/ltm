@@ -1,0 +1,1 @@
+<script src="{{asset('assets/build/js/init_core.min.js')}}"></script>

@@ -1,0 +1,1 @@
+<span class="smaller-80">مشاهده جزئیات</span> {!! $task->title !!}
