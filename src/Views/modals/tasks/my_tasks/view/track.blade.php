@@ -53,26 +53,24 @@
             <label class="col-sm-2 control-label" for="track_description">
                 <span>توضیحات</span>
             </label>
-            <div class="col-sm-10">
+            <div class="col-sm-4">
                 <textarea type="text" class="form-control" id="track_description" name="description_track" rows="5"></textarea>
                 <div class="messages"></div>
             </div>
         </div>
         <div class="clearfix"></div>
-        <div class="col-xs-12">
+        <div class="form-group">
             <label class="col-sm-2 control-label">
                 پیوست فایل
             </label>
-            <div class="col-sm-10">
-                <script>
-                    function callback_track(result)
-                    {
-                        $('#result_track').html(result.attachment_track.view.small) ;
-                    }
-                </script>
-                {!! $lfm_track['button'] !!}
-                {!! $lfm_track['modal_content'] !!}
-                <div  id="result_track"></div>
+            <div class="col-sm-4" id="upload_image">
+                <upload_image
+                        ref="uploadImage"
+                        height="150px"
+                        title="بارگزاری تصویر"
+                        :default_img_data_json = '{!! $file !!}'
+                        :old_default_img_data_json='{{ $old_file }}'
+                ></upload_image>
             </div>
         </div>
         <div class="clearfix"></div>

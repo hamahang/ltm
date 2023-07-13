@@ -1,7 +1,11 @@
 <script>
     $(document).ready(function () {
-        var form = document.querySelector('#form_track_task_{{$variable}}');
-        var constraints =
+        window.track_upload_image = new Vue({
+            el: '#track_upload_image_{{$variable}}',
+        });
+
+        var track_form = document.querySelector('#form_track_task_{{$variable}}');
+        var track_constraints =
             {
                 description:
                     {
@@ -24,11 +28,10 @@
                     $('#form_track_task_{{$variable}} .total_loader').remove();
                     if (result.success)
                     {
-                        clear_form_elements('#form_track_task_{{$variable}}');
-                        $('#result_track').html('');
                         $('#li_task_tracking').addClass('hidden');
                         $('#btn_insert_task_{{$variable}}').removeClass('hidden') ;
                         $('#btn_insert_track_task_{{$variable}}').addClass('hidden') ;
+                        $('a[href="#task_manage"]').tab('show');
                         $('a[href="#task_manage"]').click();
                     }
                     else
@@ -43,7 +46,7 @@
                 $('.total_loader').remove();
             });
         }
-        init_validatejs(form, constraints, task_track_add, '#form_track_task_{{$variable}}',true);
+        init_validatejs(track_form, track_constraints, task_track_add, '#form_track_task_{{$variable}}',true);
     });
 
 </script>

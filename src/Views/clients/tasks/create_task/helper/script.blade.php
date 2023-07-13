@@ -1,4 +1,20 @@
+<script src="{{asset('vendor/laravel_task_manager/build/multi_upload_image.min.js')}}"></script>
 <script>
+    window.attachs = new Vue({
+        el: '#attachs',
+    });
+    String.prototype.nums_to_en = function()
+    {
+        fa = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+        en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        var r = this.toString();
+        for (i = 0; i < 10; i++)
+        {
+            r = r.replace(fa[i], en[i]);
+        }
+        return r;
+    };
+
     var general_deadline = '.general_deadline';
     var general_deadline_from_date = $('.general_deadline_from_date');
     var general_deadline_from_time = $('.general_deadline_from_time');
@@ -77,7 +93,8 @@
                     $('#form_task_add .total_loader').remove();
                     if (result.success)
                     {
-                        parent.redirect_after_success(result.url);
+                        window.location.reload();
+                        // parent.redirect_after_success(result.url);
                     }
                     else {
                         showMessages(result.message, 'form_message_box', 'error', formElement);
@@ -102,11 +119,16 @@
     //
     $(document).ready(function()
     {
-        // inits
+        let assigners = JSON.parse(@json(json_encode($assigners))) ;
+
+        assigners = assigners.map(function (item) {
+            return {id:item.id,text:item.full_name}
+        })
         init_select2_ajax('.general_subject_id', '{{ route('ltm.auto_complete.subjects') }}', true);
-        init_select2_ajax('.general_users', '{{ route('ltm.auto_complete.users') }}', true, true);
-        init_select2_ajax('.general_transcripts_cc', '{{ route('ltm.auto_complete.users') }}', true, true);
-        init_select2_ajax('.general_transcripts_bcc', '{{ route('ltm.auto_complete.users') }}', true, true);
+        init_select2_data('#general_users',assigners, false, true, true, false, 'انتخاب کاربر');
+        init_select2_data('#general_transcripts_cc',assigners, false, true, true, false, 'انتخاب کاربر');
+        init_select2_data('#general_transcripts_bcc',assigners, false, true, true, false, 'انتخاب کاربر');
+
         init_select2_ajax('.general_keywords', '{{ route('ltm.auto_complete.keywords') }}', true, true, true);
         init_select2_ajax('.setting_action_do_form_id', '{{ route('ltm.auto_complete.forms') }}', true);
         init_select2_ajax('.setting_action_transfer_form_id', '{{ route('ltm.auto_complete.forms') }}', true);

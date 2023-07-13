@@ -106,30 +106,28 @@
         <form class="form-horizontal form_task_add" id="form_track_task_{{$variable}}" name="form_task_add">
             <input type="hidden" name="request_id" value="{{$request_id}}">
             <input type="hidden" name="assignment_id" value="{{$assignment_id}}">
-            <div class="form-group">
+            <div class="form-group row">
                 <label class="col-sm-2 control-label" for="track_description">
                     <span>توضیحات</span>
                 </label>
-                <div class="col-sm-10">
+                <div class="col-sm-4">
                     <textarea type="text" class="form-control" id="track_description" name="description" rows="5"></textarea>
                     <div class="messages"></div>
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="col-xs-12">
+            <div class="form-group row">
                 <label class="col-sm-2 control-label">
                     پیوست فایل
                 </label>
-                <div class="col-sm-10">
-                    <script>
-                        function callback_track(result)
-                        {
-                            $('#result_track').html(result.attachment_track.view.medium) ;
-                        }
-                    </script>
-                    {!! $lfm_track['button'] !!}
-                    {!! $lfm_track['modal_content'] !!}
-                    <div style="float: left" id="result_track"></div>
+                <div class="col-sm-4"  id="track_upload_image_{{$variable}}">
+                    <upload_image
+                            ref="uploadImage"
+                            height="150px"
+                            title="بارگزاری تصویر"
+                            :default_img_data_json = '{!! $file !!}'
+                            :old_default_img_data_json='{{ $old_file }}'
+                    ></upload_image>
                 </div>
             </div>
             <div class="clearfix"></div>

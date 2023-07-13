@@ -1,4 +1,4 @@
-@if(check_all_guard())
+@if(auth()->check())
     <div class="container">
         <div class="row" id="client_menu">
             <nav class="navbar navbar-default no-margin">
@@ -32,7 +32,6 @@
                                 <span class=" dropdown-toggle"  data-toggle="dropdown">ثبت درخواست
                                     <span class="caret"></span></span>
                                     <ul class="dropdown-menu" id="list_proccess">
-                                        {{--<li class="@if(URL::current()==route('clients.justification.form.start.index')) active_li @endif"><a href="{{route('clients.justification.form.start.index')}}">طرح توجیهی</a></li>--}}
                                         {{--<li class="@if(URL::current()==route('clients.construction.form.start.index')) active_li @endif"><a href="{{route('clients.construction.form.start.index')}}">جواز تاسیس</a></li>--}}
                                         {{--<li class="@if(URL::current()==route('clients.LandPurchase.form.start.index')) active_li @endif"><a href="{{route('clients.LandPurchase.form.start.index')}}">درخواست زمین</a></li>--}}
                                         {{--<li class="@if(URL::current()==route('clients.ImportMachines.form.start.index')) active_li @endif"><a href="{{route('clients.ImportMachines.form.start.index')}}">ورود ماشین آلات</a></li>--}}
@@ -40,7 +39,7 @@
                                     </ul>
                                 </div>
                             </li>
-                            {{--<li class="@if(URL::current()==route('ltm.clients.dashboard')) active @endif"><a href="{{ route('account.profile') }}">حساب کاربری</a></li>--}}
+                            {{--<li class="@if(URL::current()==route('ltm.clients.dashboard')) active @endif"><a href="{{ route('clients.account.profile') }}">حساب کاربری</a></li>--}}
                             {{--<li class="@if(URL::current()==route('auth.sso.logout')) active @endif"><a href="{{route('auth.sso.logout')}}">خروج</a></li>--}}
                         </ul>
                     </div><!-- /.navbar-collapse -->

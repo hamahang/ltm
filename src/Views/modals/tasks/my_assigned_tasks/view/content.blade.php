@@ -19,8 +19,8 @@
 <form class="form-horizontal form_action" id="form_action" name="form_action">
     <input type="hidden" class="task_id" id="task_id" name="task_id" value="{!! ltm_encode_ids([$task->id]) !!}" />
     <input type="hidden" class="task_assignment_id" id="task_assignment_id" name="task_assignment_id" value="{!! ltm_encode_ids([$assignment->id]) !!}" />
-    <input type="hidden" class="action_do_status_old" id="action_do_status_old" name="action_do_status_old" value="{!! @$task->assignment->statuses->first()->status !!}" />
-    <input type="hidden" class="action_do_status_percent_old" id="action_do_status_percent_old" name="action_do_status_percent_old" value="{!! @$task->assignment->statuses->first()->percent !!}" />
+    <input type="hidden" class="action_do_status_old" id="action_do_status_old" name="action_do_status_old" value="{!! $task->assignment->statuses->first()->status !!}" />
+    <input type="hidden" class="action_do_status_percent_old" id="action_do_status_percent_old" name="action_do_status_percent_old" value="{!! $task->assignment->statuses->first()->percent !!}" />
     <input type="hidden" class="action_do_importance_old" id="action_do_importance_old" name="action_do_importance_old" value="{!! $task->assigner_priority->importance !!}" />
     <input type="hidden" class="action_do_immediate_old" id="action_do_immediate_old" name="action_do_immediate_old" value="{!! $task->assigner_priority->immediate !!}" />
     <input type="hidden" class="action_type" id="action_type" name="action_type" value="-1" />

@@ -198,27 +198,25 @@ class TaskController extends Controller
                                 ],
                             ],
                     ];
-                DB::commit();
 
                 return $res;
             }
-            if (!check_user_task_permission($general_users))
-            {
-                $res =
-                    [
-                        'success' => false,
-                        'message' =>
-                            [
-                                [
-                                    'title' => 'لطفاً موارد زیر را بررسی نمایید',
-                                    'items' => [0 => 'مسئولین معتبر نمیباشند .'],
-                                ],
-                            ],
-                    ];
-                DB::commit();
-
-                return $res;
-            }
+//            if (!check_user_task_permission($general_users))
+//            {
+//                $res =
+//                    [
+//                        'success' => false,
+//                        'message' =>
+//                            [
+//                                [
+//                                    'title' => 'لطفاً موارد زیر را بررسی نمایید',
+//                                    'items' => [0 => 'مسئولین معتبر نمیباشند .'],
+//                                ],
+//                            ],
+//                    ];
+//
+//                return $res;
+//            }
             foreach ($general_users as $employee_id)
             {
                 // task
@@ -664,10 +662,13 @@ class TaskController extends Controller
 
     public function create_task_view()
     {
-        $LFM_options = ['size_file' => 1000, 'max_file_number' => 5, 'min_file_number' => 2, 'show_file_uploaded' => 'medium', 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'test'];
-        $LFM = LFM_CreateModalFileManager('attachment', $LFM_options, 'insert', 'callback', null, null, null, 'انتخاب فایل/ها');
+        
+        $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 5, 'min_file_number' => 2, 'show_file_uploaded' => 'medium', 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'test'];
+        $file = LFM_CreateModalUpload('attachment', 'insert', $LFM_options, 'callback', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
+        $old_file = json_encode([]) ;
         $subjects = Subject::all();
         $setting = auth()->user()->ltm_setting ;
-        return view('laravel_task_manager::clients.tasks.create_task.index',compact('LFM', 'subjects','setting'));
+        $assigners = config('laravel_task_manager.task_assigments_users_function_name')();
+        return view('laravel_task_manager::clients.tasks.create_task.index',compact('file','old_file', 'subjects','setting','assigners'));
     }
 }

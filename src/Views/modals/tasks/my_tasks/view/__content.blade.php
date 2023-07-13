@@ -18,126 +18,126 @@
 @endphp
 <div id="form_message_box" class="form_message_area"></div>
 
-<div class="container col-md-12">
-    <ul class="nav nav-tabs">
-        <li class="tabs{!! 'details' == $default_tab ? ' active' : null !!}" data-tab-id="details"><a data-toggle="tab" href="#details">جزئیات</a></li>
-        <li class="tabs{!! 'transcripts' == $default_tab ? ' active' : null !!}" data-tab-id="transcripts"><a data-toggle="tab" href="#transcripts">رونوشت&zwnj;ها</a></li>
-        <li class="tabs{!! 'attachs' == $default_tab ? ' active' : null !!}" data-tab-id="attachs"><a data-toggle="tab" href="#attachs">پیوست&zwnj;ها</a></li>
-        <li class="tabs{!! 'action' == $default_tab ? ' active' : null !!}" data-tab-id="action"><a data-toggle="tab" href="#action" style="color: #4caf50;">اقدام</a></li>
-        <li class="tabs{!! 'response' == $default_tab ? ' active' : null !!}" data-tab-id="response"><a data-toggle="tab" href="#response" style="color: #4caf50;">پاسخ به کاربر</a></li>
-        <li class="tabs{!! 'history' == $default_tab ? ' active' : null !!} pull-right" data-tab-id="history"><a data-toggle="tab" href="#history">تاریخچه</a></li>
-    </ul>
-    <div class="tab-content">
-        <div id="details" class="tab-pane fade {!! 'details' == $default_tab ? 'in active' : null !!}">
-            <table class="table table-striped">
-                {{--
-                <tr>
-                    <td class="col-md-2" rowspan="2">ارجاع دهنده</td>
-                    <td class="col-md-1" rowspan="2">{!! $task->assignment->assigner->avatar64 !!}</td>
-                    <td class="col-md-3">{!! $task->assignment->assigner->full_name !!}</td>
-                    <td class="col-md-2"></td>
-                    <td class="col-md-4">{!! $importances[$task->employee_priority->importance] !!}</td>
-                </tr>
-                <tr>
-                    <td class="col-md-3">{!! $task->assignment->assigner->username !!}</td>
-                    <td class="col-md-1" style="border: 0;"></td>
-                    <td class="col-md-4">{!! $immediates[$task->employee_priority->immediate] !!}</td>
-                </tr>
-                <tr style="font-weight: bold;">
-                    <td class="col-md-2">شناسه</td>
-                    <td class="col-md-2">{!! $task->code ? : 'درج نشده' !!}</td>
-                    <td class="col-md-3"></td>
-                    <td class="col-md-1" style="border: none;"></td>
-                    <td class="col-md-2">{!! $types[$task->type] !!}</td>
-                </tr>
-                --}}
-                <tr style="font-weight: bold;">
-                    <td class="col-md-2">شناسه</td>
-                    <td class="col-md-10">{!! $task->code ? : 'درج نشده' !!}</td>
-                </tr>
-                @if($task->file_no)
+    <div class="container col-md-12">
+        <ul class="nav nav-tabs">
+            <li class="tabs{!! 'details' == $default_tab ? ' active' : null !!}" data-tab-id="details"><a data-toggle="tab" href="#details">جزئیات</a></li>
+            <li class="tabs{!! 'transcripts' == $default_tab ? ' active' : null !!}" data-tab-id="transcripts"><a data-toggle="tab" href="#transcripts">رونوشت&zwnj;ها</a></li>
+            <li class="tabs{!! 'attachs' == $default_tab ? ' active' : null !!}" data-tab-id="attachs"><a data-toggle="tab" href="#attachs">پیوست&zwnj;ها</a></li>
+            <li class="tabs{!! 'action' == $default_tab ? ' active' : null !!}" data-tab-id="action"><a data-toggle="tab" href="#action" style="color: #4caf50;">اقدام</a></li>
+            <li class="tabs{!! 'response' == $default_tab ? ' active' : null !!}" data-tab-id="response"><a data-toggle="tab" href="#response" style="color: #4caf50;">پاسخ به کاربر</a></li>
+            <li class="tabs{!! 'history' == $default_tab ? ' active' : null !!} pull-right" data-tab-id="history"><a data-toggle="tab" href="#history">تاریخچه</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="details" class="tab-pane fade {!! 'details' == $default_tab ? 'in active' : null !!}">
+                <table class="table table-striped">
+                    {{--
+                    <tr>
+                        <td class="col-md-2" rowspan="2">ارجاع دهنده</td>
+                        <td class="col-md-1" rowspan="2">{!! $task->assignment->assigner->avatar64 !!}</td>
+                        <td class="col-md-3">{!! $task->assignment->assigner->full_name !!}</td>
+                        <td class="col-md-2"></td>
+                        <td class="col-md-4">{!! $importances[$task->employee_priority->importance] !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-3">{!! $task->assignment->assigner->username !!}</td>
+                        <td class="col-md-1" style="border: 0;"></td>
+                        <td class="col-md-4">{!! $immediates[$task->employee_priority->immediate] !!}</td>
+                    </tr>
+                    <tr style="font-weight: bold;">
+                        <td class="col-md-2">شناسه</td>
+                        <td class="col-md-2">{!! $task->code ? : 'درج نشده' !!}</td>
+                        <td class="col-md-3"></td>
+                        <td class="col-md-1" style="border: none;"></td>
+                        <td class="col-md-2">{!! $types[$task->type] !!}</td>
+                    </tr>
+                    --}}
+                    <tr style="font-weight: bold;">
+                        <td class="col-md-2">شناسه</td>
+                        <td class="col-md-10">{!! $task->code ? : 'درج نشده' !!}</td>
+                    </tr>
+                    @if($task->file_no)
                     <tr>
                         <td class="col-md-2">شماره پرونده</td>
                         <td class="col-md-10" colspan="4" style="text-align: justify;">
                             {!! ltm_html_file_no_creator($task->file_no) !!}
                         </td>
                     </tr>
-                @endif
-                @if(isset($task->step_name) && $task->step_name)
-                    <tr>
+                    @endif
+                    @if(isset($task->step_name) && $task->step_name)
+                        <tr>
 
-                        <td class="col-md-2">گام</td>
+                            <td class="col-md-2">گام</td>
+                            <td class="col-md-10" colspan="4" style="text-align: justify;">
+                                {{$task->step_name}}
+                            </td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <td class="col-md-2">موضوع</td>
+                        <td class="col-md-10" colspan="4">{!! $task->subject->title !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-2">عنوان</td>
+                        <td class="col-md-10" colspan="4">{!! $task->title !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-2">توضیحات</td>
+                        <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->description ? $task->description : '<span style="color: lightgray;">بدون توضیحات</span>' !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-2">زمان شروع</td>
+                        <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->jalali_start_time !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-2">مدت مهلت انجام</td>
+                        <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->human_duration_timestamp !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-2">مهلت انجام باقیمانده</td>
+                        <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->human_remaining_duration_timestamp !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-2">شماره پرونده</td>
                         <td class="col-md-10" colspan="4" style="text-align: justify;">
-                            {{$task->step_name}}
+                            @if ($task->file_no)
+                                @if (1 == $task->file_data['status'])
+                                    @foreach ($task->file_data['data'] as $row)
+                                        <div class="row panel" >{!! $row !!}</div>
+                                    @endforeach
+                                @else
+                                    <span class="text-danger">{!! $task->file_data['data'] !!}</span>
+                                @endif
+                            @else
+                                <span style="color: lightgray;">بدون شماره پرونده</span>
+                            @endif
                         </td>
                     </tr>
-                @endif
-                <tr>
-                    <td class="col-md-2">موضوع</td>
-                    <td class="col-md-10" colspan="4">{!! $task->subject->title !!}</td>
-                </tr>
-                <tr>
-                    <td class="col-md-2">عنوان</td>
-                    <td class="col-md-10" colspan="4">{!! $task->title !!}</td>
-                </tr>
-                <tr>
-                    <td class="col-md-2">توضیحات</td>
-                    <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->description ? $task->description : '<span style="color: lightgray;">بدون توضیحات</span>' !!}</td>
-                </tr>
-                <tr>
-                    <td class="col-md-2">زمان شروع</td>
-                    <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->jalali_start_time !!}</td>
-                </tr>
-                <tr>
-                    <td class="col-md-2">مدت مهلت انجام</td>
-                    <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->human_duration_timestamp !!}</td>
-                </tr>
-                <tr>
-                    <td class="col-md-2">مهلت انجام باقیمانده</td>
-                    <td class="col-md-10" colspan="4" style="text-align: justify;">{!! $task->human_remaining_duration_timestamp !!}</td>
-                </tr>
-                {{--<tr>--}}
-                {{--<td class="col-md-2">شماره پرونده</td>--}}
-                {{--<td class="col-md-10" colspan="4" style="text-align: justify;">--}}
-                {{--@if ($task->file_no)--}}
-                {{--@if (1 == $task->file_data['status'])--}}
-                {{--@foreach ($task->file_data['data'] as $row)--}}
-                {{--<div class="row panel" >{!! $row !!}</div>--}}
-                {{--@endforeach--}}
-                {{--@else--}}
-                {{--<span class="text-danger">{!! $task->file_data['data'] !!}</span>--}}
-                {{--@endif--}}
-                {{--@else--}}
-                {{--<span style="color: lightgray;">بدون شماره پرونده</span>--}}
-                {{--@endif--}}
-                {{--</td>--}}
-                {{--</tr>--}}
-                <tr>
-                    <td class="col-md-2">کلیدواژه&zwnj;ها</td>
-                    <td class="col-md-10" colspan="4" style="margin-left: 0; padding-left: 0;">
-                        @forelse ($task->keywords as $keyword)
-                            <nobr class="keyword"><i class="fa fa-tag"></i><span>{!! $keyword->title !!}</span></nobr>
-                        @empty
-                            <span style="color: lightgray;">بدون کلیدواژه</span>
-                        @endforelse
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="transcripts" class="tab-pane fade {!! 'transcripts' == $default_tab ? 'in active' : null !!}">
-            <table class="table table_transcripts" id="table_transcripts"></table>
-        </div>
-        <div id="attachs" class="tab-pane fade {!! 'attachs' == $default_tab ? 'in active' : null !!}">
-            {!! $LFM_show !!}
-        </div>
-        <div id="action" class="tab-pane fade {!! 'action' == $default_tab ? 'in active' : null !!}">
-            <form class="form-horizontal form_action" id="form_action" name="form_action">
-                <input type="hidden" class="task_id" id="task_id" name="task_id" value="{!! ltm_encode_ids([$task->id]) !!}" />
-                <input type="hidden" class="task_assignment_id" id="task_assignment_id" name="task_assignment_id" value="{!! ltm_encode_ids([$task->assignment->id]) !!}" />
-                <input type="hidden" class="action_do_status_old" id="action_do_status_old" name="action_do_status_old" value="{!! $task->assignment->current_status->status !!}" />
-                <input type="hidden" class="action_do_status_percent_old" id="action_do_status_percent_old" name="action_do_status_percent_old" value="{!! $task->assignment->current_status->percent !!}" />
-                <input type="hidden" class="action_do_importance_old" id="action_do_importance_old" name="action_do_importance_old" value="{!! $task->employee_priority->importance !!}" />
-                <input type="hidden" class="action_do_immediate_old" id="action_do_immediate_old" name="action_do_immediate_old" value="{!! $task->employee_priority->immediate !!}" />
+                    <tr>
+                        <td class="col-md-2">کلیدواژه&zwnj;ها</td>
+                        <td class="col-md-10" colspan="4" style="margin-left: 0; padding-left: 0;">
+                            @forelse ($task->keywords as $keyword)
+                                <nobr class="keyword"><i class="fa fa-tag"></i><span>{!! $keyword->title !!}</span></nobr>
+                            @empty
+                                <span style="color: lightgray;">بدون کلیدواژه</span>
+                            @endforelse
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="transcripts" class="tab-pane fade {!! 'transcripts' == $default_tab ? 'in active' : null !!}">
+                <table class="table table_transcripts" id="table_transcripts"></table>
+            </div>
+            <div id="attachs" class="tab-pane fade {!! 'attachs' == $default_tab ? 'in active' : null !!}">
+                {!! $LFM_show !!}
+            </div>
+            <div id="action" class="tab-pane fade {!! 'action' == $default_tab ? 'in active' : null !!}">
+                <form class="form-horizontal form_action" id="form_action" name="form_action">
+                    <input type="hidden" class="task_id" id="task_id" name="task_id" value="{!! ltm_encode_ids([$task->id]) !!}" />
+                    <input type="hidden" class="task_assignment_id" id="task_assignment_id" name="task_assignment_id" value="{!! ltm_encode_ids([$task->assignment->id]) !!}" />
+                    <input type="hidden" class="action_do_status_old" id="action_do_status_old" name="action_do_status_old" value="{!! $task->assignment->current_status->status !!}" />
+                    <input type="hidden" class="action_do_status_percent_old" id="action_do_status_percent_old" name="action_do_status_percent_old" value="{!! $task->assignment->current_status->percent !!}" />
+                    <input type="hidden" class="action_do_importance_old" id="action_do_importance_old" name="action_do_importance_old" value="{!! $task->employee_priority->importance !!}" />
+                    <input type="hidden" class="action_do_immediate_old" id="action_do_immediate_old" name="action_do_immediate_old" value="{!! $task->employee_priority->immediate !!}" />
                 <!-- action_type: start -->
                 @if (2 == $task->assignment->current_status->status)
                     <div class="well">این وظیفه را انجام داده اید.</div>
@@ -471,15 +471,95 @@
                         </div>
                     </div>
                 @endif
-                <button type="submit" class="submit_form_action hidden">submit</button>
-            </form>
-        </div>
-        <div id="response"  class="tab-pane">
-            {!! $track_view !!}
-        </div>
-        <div id="history" class="tab-pane fade {!! 'history' == $default_tab ? 'in active' : null !!}">
-            <!-- Timeline -->
-            @if ($task->logs->count())
+                    <button type="submit" class="submit_form_action hidden">submit</button>
+                </form>
+            </div>
+            <div id="response"  class="tab-pane">
+                @if (count($chats) > 0)
+                    @include('laravel_task_manager::clients.tasks.panels.jspanel.helpers.track_style')
+                    <div class="">
+                        <ul class="ltm-timeline">
+                            @foreach ($chats as $chat)
+                                @php($timeline_class='')
+                                @if($chat->is_message_from_client == '0')
+                                    @php($timeline_class = 'ltm-timeline-inverted')
+                                @endif
+                                <li class="{{$timeline_class}}">
+                                    <div class="ltm-timeline-badge">{!! $chat->avatar_image !!}</div>
+                                    <div class="ltm-timeline-panel">
+                                        <div class="ltm-timeline-heading">
+                                            <div class="col-md-6">
+                                                <p><small class="text-muted"><i class="glyphicon glyphicon-user"></i> {{$chat->user->full_name}}</small></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> {!! ltm_Date_GtoJ($chat->created_at, 'Y/m/d - H:i') !!}</small></p>
+                                            </div>
+                                        </div>
+                                        <hr  style="margin-bottom: 10px;    clear: both;">
+                                        <div class="ltm-timeline-title col-md-12" style="margin-bottom: 15px;">
+                                            <p>{{$chat->description}}</p>
+                                        </div>
+                                        <hr  style="margin-bottom: 10px;    clear: both;">
+
+                                        <div class="ltm-timeline-body">
+                                            <div class="col-md-6">
+                                                <p style="font-size: 11px">فایل های پیوست :</p></div>
+                                            <div class="col-md-6">
+                                                @if($chat->file_id)
+                                                    <a style="float: left;font-size: 21px;" href="{{ LFM_GenerateDownloadLink('ID', $chat->file_id, 'original', '404_user_avatar.jpg')}}"><i class="fa fa-file-zip-o img-file-thumbnail"></i></a>
+                                                @else
+                                                    ----
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @else
+                    <div class="well">موردی برای نمایش وجود ندارد.</div>
+                @endif
+                <div class="space-10"></div>
+                @if($is_final_assigment)
+                        <div id="form_message_box_track" class="form_message_area"></div>
+                        <form class="form-horizontal form_task_add" id="form_track_task" name="form_task_add">
+                            <input type="hidden" name="assignment_id" value="{{$assignment_id}}">
+                            <input type="hidden" name="type" value="response">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="track_description">
+                                    <span>توضیحات</span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <textarea type="text" class="form-control" id="track_description" name="description_track" rows="5"></textarea>
+                                    <div class="messages"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-xs-12">
+                                <label class="col-sm-2 control-label">
+                                    پیوست فایل
+                                </label>
+                                <div class="col-sm-10">
+                                    <script>
+                                        function callback_track(result)
+                                        {
+                                            $('#result_track').html(result.attachment_track.view.small) ;
+                                        }
+                                    </script>
+                                    {!! $lfm_track['button'] !!}
+                                    {!! $lfm_track['modal_content'] !!}
+                                    <div  id="result_track"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <button type="submit" id="submit_insert_track" class="hidden"></button>
+                        </form>
+                @endif
+            </div>
+            <div id="history" class="tab-pane fade {!! 'history' == $default_tab ? 'in active' : null !!}">
+                <!-- Timeline -->
+                @if ($task->logs->count())
                 <div class="timeline timeline-left">
                     <div class="timeline-container">
                         <div class="timeline-date text-muted">
@@ -515,10 +595,15 @@
                         @endforeach
                     </div>
                 </div>
-            @else
-                <div class="well">موردی برای نمایش وجود ندارد.</div>
-        @endif
-        <!-- /timeline -->
+                @else
+                    <div class="well">موردی برای نمایش وجود ندارد.</div>
+                @endif
+                <!-- /timeline -->
+            </div>
         </div>
     </div>
-</div>
+
+
+
+
+

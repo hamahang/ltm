@@ -1,4 +1,14 @@
 <script>
+    function addScript(path, type, callback) {
+        let script = document.createElement('script');
+        script.src = path;
+        script.type = type;
+        document.head.appendChild(script);
+        window.upload_image = new Vue({
+            el: '#upload_image',
+        });
+    }
+
     var constraints =
     {};
     var form = document.querySelector('#form_action');
@@ -25,12 +35,14 @@
             success: function(result)
             {
                 $('.total_loader').remove();
-                if (result.success)
+                if ('success' === result.status_type)
                 {
-                    // $('a[href="#task_tracing"]').click();
-                    // $('#track_description').val('');
-                    // $('#result_track').html('');
-                    $('#response').html(result.track_view) ;
+                    $('a[href="#task_tracing"]').tab('show');
+                    $('a[href="#task_tracing"]').click();
+                    $('#track_description').val('');
+                    upload_image.$refs.uploadImage.resetForm()
+
+                    datatable_reload();
                 } else
                 {
                     showMessages(result.message, 'form_message_box', 'error', formElement);
@@ -102,6 +114,10 @@
     //
     $(document).ready(function()
     {
+        let path = "{{asset('vendor/laravel_task_manager/build/upload_image.min.js')}}";
+        let scriptType = 'text/javascript';
+        addScript(path, scriptType)
+
         // inits
         init_select2_ajax('.action_transfer_do_form_id', '{{ route('ltm.auto_complete.forms') }}', true);
         init_select2_ajax('.action_transfer_transfer_form_id', '{{ route('ltm.auto_complete.forms') }}', true);
@@ -157,7 +173,7 @@
                 {'title': 'نام کاربری'},
                 {'title': 'تصویر', sortable: false}
             ],
-            data: {!! $transcripts_datatable_data !!},
+{{--            data: {!! $transcripts_datatable_data !!},--}}
             processing: false,
             serverSide: false
         });

@@ -13,16 +13,9 @@
         .schedule_every_type_monthly,
         .schedule_every_type_seasonly,
         .schedule_every_type_yearly,
-        @if($setting && $setting->is_acive_email !='1')
-            .fg_setting_email,
-        @endif
-        @if($setting && $setting->is_acive_sms !='1')
-            .fg_setting_sms,
-        @endif
-        @if($setting && $setting->is_acive_messenger !='1')
-        .fg_setting_messaging
-        @endif
-        {
+        .fg_setting_email,
+        .fg_setting_sms,
+        .fg_setting_messaging {
             display: none;
         }
 
@@ -98,7 +91,7 @@
                                     <!-- general_title: end / general_subject_id: start -->
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label"></label>
-                                        <label class="col-sm-10 control-label" >
+                                        <label class="col-sm-10 control-label">
                                             <span style="color: #ffc50d"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></span>
                                             <span style="    color: #989898;">جهت مشاهده کلیه موضوعات قابل انتخاب میتوانید از "..." استفاده نمائید .</span>
                                         </label>
@@ -125,7 +118,7 @@
                                     <!-- general_description: end / general_users: start -->
                                     <div class="form-group fg_general_users">
                                         <label class="col-sm-2 control-label"></label>
-                                        <label class="col-sm-10 control-label" >
+                                        <label class="col-sm-10 control-label">
                                             <span style="color: #ffc50d"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></span>
                                             <span style="color: #989898;">جهت مشاهده کلیه مسئولین قابل انتخاب میتوانید از "..." استفاده نمائید .</span>
                                         </label>
@@ -141,7 +134,9 @@
                                                     </span>
                                                     <span style="padding-right: 5px;">0</span>
                                                 </div>
-                                                <select class="general_users" id="general_users" name="general_users[]" multiple="multiple"></select>
+                                                <select class="general_users" id="general_users" name="general_users[]" multiple="multiple">
+                                                    <option value=""></option>
+                                                </select>
                                             </div>
                                             <div class="messages"></div>
                                         </div>
@@ -159,7 +154,9 @@
                             </span>
                                                     <span style="padding-right: 5px;">0</span>
                                                 </div>
-                                                <select class="form-control general_transcripts_cc" id="general_transcripts_cc" name="general_transcripts_cc[]" multiple></select>
+                                                <select class="form-control general_transcripts_cc" id="general_transcripts_cc" name="general_transcripts_cc[]" multiple>
+                                                    <option value=""></option>
+                                                </select>
                                             </div>
                                             <div class="messages"></div>
                                         </div>
@@ -177,7 +174,9 @@
                             </span>
                                                     <span style="padding-right: 5px;">0</span>
                                                 </div>
-                                                <select class="form-control general_transcripts_bcc" id="general_transcripts_bcc" name="general_transcripts_bcc[]" multiple></select>
+                                                <select class="form-control general_transcripts_bcc" id="general_transcripts_bcc" name="general_transcripts_bcc[]" multiple>
+                                                    <option value=""></option>
+                                                </select>
                                             </div>
                                             <div class="messages"></div>
                                         </div>
@@ -326,20 +325,20 @@
                                             <div class="form-group">
                                                 <div class="checkbox-inline col-sm-2">
                                                     <label>
-                                                        <input type="checkbox" class="setting_email" id="setting_email" name="setting_email[]" value="is_active" @if($setting && $setting->is_acive_email =='1') checked @endif>
+                                                        <input type="checkbox" class="setting_email" id="setting_email" name="setting_email[]" value="is_active">
                                                         <span>ایمیل</span>
                                                     </label>
                                                 </div>
                                                 <div class="col-sm-10 fg_setting_email">
                                                     <div class="checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" class="" id="setting_email_users" name="setting_email[]" value="users" @if($setting && $setting->responsible_email =='1') checked @endif>
+                                                            <input type="checkbox" class="" id="setting_email_users" name="setting_email[]" value="users">
                                                             <span>مسئولین</span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" class="" id="setting_email_transcripts" name="setting_email[]" value="transcripts" @if($setting && $setting->transcript_email =='1') checked @endif>
+                                                            <input type="checkbox" class="" id="setting_email_transcripts" name="setting_email[]" value="transcripts">
                                                             <span>رونوشت گیرندگان</span>
                                                         </label>
                                                     </div>
@@ -349,20 +348,20 @@
                                             <div class="form-group">
                                                 <div class="checkbox-inline col-sm-2">
                                                     <label>
-                                                        <input type="checkbox" class="setting_sms" id="setting_sms" name="setting_sms[]" value="is_active" @if($setting && $setting->is_acive_sms =='1') checked @endif>
+                                                        <input type="checkbox" class="setting_sms" id="setting_sms" name="setting_sms[]" value="is_active">
                                                         <span>پیامک</span>
                                                     </label>
                                                 </div>
                                                 <div class="col-sm-10 fg_setting_sms">
                                                     <div class="checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" class="" id="setting_sms_users" name="setting_sms[]" value="users" @if($setting && $setting->responsible_sms =='1') checked @endif>
+                                                            <input type="checkbox" class="" id="setting_sms_users" name="setting_sms[]" value="users">
                                                             <span>مسئولین</span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" class="" id="setting_sms_transcripts" name="setting_sms[]" value="transcripts" @if($setting && $setting->transcript_sms =='1') checked @endif>
+                                                            <input type="checkbox" class="" id="setting_sms_transcripts" name="setting_sms[]" value="transcripts">
                                                             <span>رونوشت گیرندگان</span>
                                                         </label>
                                                     </div>
@@ -372,20 +371,20 @@
                                             <div class="form-group">
                                                 <div class="checkbox-inline col-sm-2">
                                                     <label>
-                                                        <input type="checkbox" class="setting_messaging" id="setting_messaging" name="setting_messaging[]" value="is_active" @if($setting && $setting->is_acive_messenger =='1') checked @endif>
+                                                        <input type="checkbox" class="setting_messaging" id="setting_messaging" name="setting_messaging[]" value="is_active">
                                                         <span>پیام رسان</span>
                                                     </label>
                                                 </div>
                                                 <div class="col-sm-10 fg_setting_messaging">
                                                     <div class="checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" class="" id="setting_messaging_users" name="setting_messaging[]" value="users" @if($setting && $setting->responsible_messenger =='1') checked @endif>
+                                                            <input type="checkbox" class="" id="setting_messaging_users" name="setting_messaging[]" value="users">
                                                             <span>مسئولین</span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" class="" id="setting_messaging_transcripts" name="setting_messaging[]" value="transcripts" @if($setting && $setting->transcript_messenger =='1') checked @endif>
+                                                            <input type="checkbox" class="" id="setting_messaging_transcripts" name="setting_messaging[]" value="transcripts">
                                                             <span>رونوشت گیرندگان</span>
                                                         </label>
                                                     </div>
@@ -560,14 +559,12 @@
                                 </div>
                                 <!-- rels: end / resources: start -->
                                 <div class="tab-pane fade" id="attachs">
-                                    <script>
-                                        function callback(result) {
-                                            $('#result').html(result.attachment.view.small);
-                                        }
-                                    </script>
-                                    {!! $LFM['button'] !!}
-                                    {!! $LFM['modal_content'] !!}
-                                    <div id="result"></div>
+                                    <multi_upload_image
+                                            height="150px"
+                                            title="بارگزاری فایل "
+                                            :default_img_data_json='{!! $file !!}'
+                                            :old_multifile_data='{{ $old_file }}'
+                                    ></multi_upload_image>
                                 </div>
                                 <!-- attachs: end -->
                             </div>

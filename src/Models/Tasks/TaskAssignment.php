@@ -161,7 +161,7 @@ class TaskAssignment extends Model
      */
     public function visits()
     {
-        return $this->morphMany('Hamahang\LVS\Models\Visit', 'visitable', 'target_type', 'target_id');
+        return $this->morphMany('ArtinCMS\LVS\Models\Visit', 'visitable', 'target_type', 'target_id');
     }
 
     /**

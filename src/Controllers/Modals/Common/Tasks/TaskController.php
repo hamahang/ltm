@@ -2,13 +2,13 @@
 
 namespace Hamahang\LTM\Controllers\Modals\Common\Tasks;
 
+use ArtinCMS\LVS\Models\Visit;
 use Hamahang\LTM\Controllers\Controller;
 use Hamahang\LTM\Models\Form;
 use Hamahang\LTM\Models\Subject;
 use Hamahang\LTM\Models\Tasks\ClientChatHistory;
 use Hamahang\LTM\Models\Tasks\Task;
 use Hamahang\LTM\Models\Tasks\TaskAssignment;
-use Hamahang\LVS\Models\Visit;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -401,12 +401,16 @@ class TaskController extends Controller
         } else
         {
             $progress = $this->progress($task);
-            $LFM_options = ['size_file' => 10000, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar']];
-            $lfm_track = LFM_CreateModalFileManager('attachment_track', $LFM_options, 'insert', 'callback_track', null, null, null, 'انتخاب فایل/ها');
             $assigner_progress_id = $progress['assigner']->id ;
+            $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar','png', 'jpg'], 'path' => 'task/chat', 'show_file_uploaded' => 'original'];
+            $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
+            $old_file = [] ;
+
             $track_view = view('laravel_task_manager::modals.tasks.my_tasks.view.track')
                 ->with('chats',$chats)
-                ->with('lfm_track',$lfm_track)
+                ->with('file',$file)
+                ->with('variable','trackInsert')
+                ->with('old_file',json_encode($old_file))
                 ->with('is_final_assigment',$is_final_assigment)
                 ->with('assignment_id' , ltm_encode_ids([$assignment_id]))
                 ->render();
@@ -460,7 +464,7 @@ class TaskController extends Controller
             $visit_target_type = 'Hamahang\LTM\Models\Tasks\TaskAssignment';
             $visit_target_id = $assignment->id;
         }
-        $visit = new Visit;
+        $visit = new Visit();
         $visit->target_type = $visit_target_type;
         $visit->target_id = $visit_target_id;
         $visit->user_id = auth()->id();

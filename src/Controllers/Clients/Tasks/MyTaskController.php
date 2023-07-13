@@ -685,13 +685,16 @@ class MyTaskController extends Controller
             $chat->user_id = auth()->id();
             $chat->save();
             $itemFile = LFM_SaveSingleFile($chat, 'file_id', 'attachment_track');
-            $LFM_options = ['size_file' => 10000, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar']];
-            $lfm_track = LFM_CreateModalFileManager('attachment_track', $LFM_options, 'insert', 'callback_track', null, null, null, 'انتخاب فایل/ها');
             $chats = ClientChatHistory::with('user')->where('assignment_id',$assignment_id)->get() ;
+            $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar','png', 'jpg'], 'path' => 'task/chat', 'show_file_uploaded' => 'original'];
+            $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
+            $old_file = [] ;
+
             $is_final_assigment = true ;
             $track_view = view('laravel_task_manager::modals.tasks.my_tasks.view.track')
                 ->with('chats',$chats)
-                ->with('lfm_track',$lfm_track)
+                ->with('file',$file)
+                ->with('old_file',json_encode($old_file))
                 ->with('is_final_assigment',$is_final_assigment)
                 ->with('assignment_id' , ltm_encode_ids([$assignment_id]))
                 ->render();

@@ -35,7 +35,30 @@
 <!-- ---------------------------------------- ****_Modals_**** -------------------------------------------- -->
 @yield(config('laravel_task_manager.task_master_yield_modals'))
 <!-- ------------------------------------------ ************ ---------------------------------------------- -->
-
+<script>
+    String.prototype.nums_to_en = function()
+    {
+        fa = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+        en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        var r = this.toString();
+        for (i = 0; i < 10; i++)
+        {
+            r = r.replace(fa[i], en[i]);
+        }
+        return r;
+    };
+    String.prototype.nums_to_fa = function()
+    {
+        en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        fa = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+        var r = this.toString();
+        for (i = 0; i < 10; i++)
+        {
+            r = r.replace(en[i], fa[i]);
+        }
+        return r;
+    };
+</script>
 @yield(config('laravel_task_manager.task_master_yield_footer_plugin_js'))
 @yield(config('laravel_task_manager.task_master_yield_footer_inline_javascript'))
 </body>
