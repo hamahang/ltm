@@ -831,7 +831,6 @@ if (!function_exists('check_subject_task_permission'))
         if (function_exists( config('laravel_task_manager.task_assigments_users_id_function_name')))
         {
             $subjects = config('laravel_task_manager.task_assigments_subject_function_name')() ;
-
         }
         else
         {

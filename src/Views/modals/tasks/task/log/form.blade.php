@@ -25,7 +25,7 @@
                         {
                             if (json_decode($result->form_field->setting)->multiple)
                             {
-                                $task_assignment = \Hamahang\LTM\Models\Tasks\TaskAssignment::find($log->task_assignment_id);
+                                $task_assignment = \ArtinCMS\LTM\Models\Tasks\TaskAssignment::find($log->task_assignment_id);
                                 $files = LFM_ShowMultiFile($task_assignment);
                                 print("<td>{$files['view']['small']}</td>");
                             } else

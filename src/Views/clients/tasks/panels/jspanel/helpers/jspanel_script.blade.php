@@ -56,13 +56,13 @@
             //     'data': 'employee',
             //     'name': 'employee'
             // },
-            // {
-            //     'searchable': false,
-            //     'sortable': false,
-            //     'title': 'وضعیت',
-            //     'data': 'status',
-            //     'name': 'status'
-            // },
+            {
+                'searchable': false,
+                'sortable': false,
+                'title': 'وضعیت',
+                'data': 'status',
+                'name': 'status'
+            },
             {
                 'searchable': false,
                 'sortable': false,
@@ -101,8 +101,6 @@
         ];
     $(document).ready(function () {
         datatable_load_fun() ;
-        var variable = "{{$variable}}";
-        window[variable].maximize();
     });
 
     $(document).off('click', '.tracking_btn');

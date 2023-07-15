@@ -6,7 +6,7 @@
 <div class="">
     <div style="width: 100%">
         <div style="text-align: center; background-color: #444444">
-            <img src="https://freezones.hamahang-co.ir/assets/images/free_zone_logo.png" width="190" height="80">
+            <img src="https://freezones.hamahang-co.ir/assets/images/imf_logo.jpg" width="190" height="80">
         </div>
         <div style="padding: 20px"></div>
         <span>تبریک! حساب کاربری شما با موفقیت تایید گردید.</span>

@@ -36,13 +36,6 @@
     var my_tasks_calendar_timer_counter = my_tasks_calendar_timer_timeout = {!! $my_tasks_calendar_timer_timeout !!};
     var my_tasks_route = '{{ route('ltm.clients.tasks.my_tasks.datatable_get') }}';
 
-
-
-
-
-
-
-
     window['my_tasks_grid_columns'] =
     [
         {
@@ -142,7 +135,7 @@
             filter_assigner: filter_assigner,
             filter_status: filter_status,
             filter_importance: filter_importance,
-            filter_immediate: filter_immediate
+            filter_immediate: filter_immediate,
         };
         function datatable_checkbox_change(data)
         {
@@ -160,6 +153,7 @@
                 e_btn_integrate.removeAttr('disabled');
             }
         }
+
         dataTablesGrid('.my_tasks', 'my_tasks', my_tasks_route, my_tasks_grid_columns, data, null, true, null, null, 1, null, true, datatable_checkbox_change);
         $('.my_tasks thead').append
         (
@@ -484,6 +478,8 @@
     $(document).ready(function()
     {
         my_tasks_timer_start();
-        datatable_load();
+        setTimeout(function(){
+            datatable_load();
+        },500)
     });
 </script>

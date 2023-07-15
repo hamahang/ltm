@@ -88,19 +88,7 @@ class AutoCompleteController extends Controller
     public function users(Request $request)
     {
         $x = $request->term;
-        $data = config('laravel_task_manager.task_assigments_users_id_function_name')();
-
-        if ($x['term'] != '...')
-        {
-            $data =$data
-                ->where("username", "LIKE", "%" . $x['term'] . "%")
-                ->Orwhere("first_name", "LIKE", "%" . $x['term'] . "%")
-                ->Orwhere("last_name", "LIKE", "%" . $x['term'] . "%")
-                ->Orwhere("email", "LIKE", "%" . $x['term'] . "%")
-
-            ;
-        }
-        $data = $data->whereRoleIs('task_creator')->get();
+        $data = config('laravel_task_manager.task_assigments_users_function_name')();
         $data = array('results' => $data);
         return response()->json($data);
     }

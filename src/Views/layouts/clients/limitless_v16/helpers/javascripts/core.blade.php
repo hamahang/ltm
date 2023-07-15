@@ -1,5 +1,9 @@
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEa_E14LcfFFasp2RzFxzXT7XRqT1s92U&sensor=false&libraries=places"></script>
 <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/build/client/js/init_core.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/moment/moment.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/moment/moment-jalaali.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/fullcalendar.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/lang/fa.js') }}"></script>
 <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/build/common/js/init_data.min.js') }}"></script>
 
 <script>

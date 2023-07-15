@@ -11,7 +11,7 @@
                         <ul class="nav nav-tabs nav-tabs-bottom">
                             <!-- right / tabs -->
                             <li class="my_tasks_tab tabs active" data-tab="my_tasks_tab"><a href="#my_tasks_tab" data-toggle="tab"><i class="fa fa-tasks"></i> وظایف من</a></li>
-                            <li class="my_tasks_calendar_tab tabs" data-tab="my_tasks_calendar_tab"><a href="#my_tasks_calendar_tab" data-toggle="tab"><i class="fa fa-calendar"></i> وظایف من در تقویم</a></li>
+                            <li class="my_tasks_calendar_tab tabs" data-tab="my_tasks_calendar_tab"><a href="#my_tasks_calendar_tab" data-toggle="tab"><i class="fa fa-calendar" style="display: none"></i> وظایف من در تقویم</a></li>
                             <!-- left / buttons / my_tasks -->
                             <li class="pull-right my_tasks_timer" style="margin-right: 10px;">
                                 <div class="btn-group" role="group">
@@ -119,5 +119,11 @@
 @stop
 
 @section(config('laravel_task_manager.task_master_yield_footer_inline_javascript'))
+{{--    <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/moment/moment.js') }}"></script>--}}
+{{--    <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/moment/moment-jalaali.js') }}"></script>--}}
+{{--    <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/fullcalendar.js') }}"></script>--}}
+{{--    <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/packagegs/fullcalander/js/lang/fa.js') }}"></script>--}}
+{{--    <script type="text/javascript" src="{{ asset('vendor/laravel_task_manager/build/common/js/init_data.min.js') }}"></script>--}}
+
     @include('laravel_task_manager::clients.tasks.my_tasks.helper.script')
 @stop

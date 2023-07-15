@@ -86,29 +86,52 @@ class ClientTaskController extends Controller
 
     public function JsPanelTask(Request $request)
     {
-        $LFM_options = ['size_file' => 1000, 'max_file_number' => 3, 'min_file_number' => 1, 'show_file_uploaded' => 'small', 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'task/uploaded'];
-        $LFM = LFM_CreateModalUpload('attachment', 'showUploadFile', $LFM_options, 'result', 'UploadFileManager', false, 'show_result_button', 'آپلود فایل');
+        $LFM_options = ['size_file' => 4 * 1000 * 1000, 'max_file_number' => 3, 'min_file_number' => 1, 'show_file_uploaded' => 'small', 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'task/uploaded'];
+        $file = LFM_CreateModalUpload('attachment', 'showUploadFile', $LFM_options, 'result', 'UploadFileManager', false, 'show_result_button', 'آپلود فایل')['json'];
+        $old_file = [] ;
         $step = config('laravel_task_manager.task_get_step_function_name')($request->step_id);
         $user_id = config('laravel_task_manager.task_get_user_id')();
         $user_requestes = config('laravel_task_manager.task_file_no_list_in_clients_function_name')($user_id);
         $all_request_filter = get_file_no_list_in_client_for_filter($user_id);
-
+        $subjects = Subject::where('is_active','1')->select('id','title as text')->get() ;
         return json_encode([
-            'header'  => 'درخواست پشتیبانی',
-            'content' => view('laravel_task_manager::clients.tasks.panels.jspanel.JsPanelContentTask')
+            'header'    => 'درخواست پشتیبانی',
+            'content'   => view('laravel_task_manager::clients.tasks.panels.jspanel.content')
                 ->with('request_id', $request->request_id)
                 ->with('user_requestes', $user_requestes)
                 ->with('all_request_filter', $all_request_filter)
                 ->with('step', $step)
                 ->with('type', 'insert')
                 ->with('variable', $request->panelVariableName)
-                ->with('LFM', $LFM)
+                ->with('file', $file)
+                ->with('old_file', json_encode($old_file))
                 ->with('variable', $request->panelVariableName)
                 ->render(),
-            'footer'  => view('laravel_task_manager::clients.tasks.panels.jspanel.JsPanelFooterTask')
+            'footer'    => view('laravel_task_manager::clients.tasks.panels.jspanel.footer')
                 ->with('type', 'insert')
                 ->with('variable', $request->panelVariableName)
-                ->render()
+                ->with('user_requestes', $user_requestes)
+                ->with('all_request_filter', $all_request_filter)
+                ->with('step', $step)
+                ->with('type', 'insert')
+                ->with('variable', $request->panelVariableName)
+                ->with('request_id', $request->request_id)
+                ->with('file', $file)
+                ->with('old_file', json_encode($old_file))
+                ->render(),
+            'inline_js' => remove_script_tags_for_eval(view('laravel_task_manager::clients.tasks.panels.jspanel.inline_js')
+                ->with('variable', $request->panelVariableName)
+                ->with('user_requestes', $user_requestes)
+                ->with('type', 'insert')
+                ->with('all_request_filter', $all_request_filter)
+                ->with('step', $step)
+                ->with('type', 'insert')
+                ->with('variable', $request->panelVariableName)
+                ->with('request_id', $request->request_id)
+                ->with('file', $file)
+                ->with('old_file', json_encode($old_file))
+                ->with('subjects', $subjects)
+                ->render())
         ]);
     }
 
@@ -384,16 +407,18 @@ class ClientTaskController extends Controller
         $variable = $request->variable;
         $assignment = TaskAssignment::with('confirmation')->find($assignment_id);
         $task = Task::where('id', $assignment->task_id)->with('subject', 'assignment.assigner', 'assignment.employee', 'priority', 'keywords', 'logs')->first();
-        $LFM_options = ['size_file' => 10000, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar'], 'path' => 'task/chat', 'show_file_uploaded' => 'small'];
-        $lfm_track = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل');
+        $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'task/chat', 'show_file_uploaded' => 'small'];
+        $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
+        $old_file = [] ;
         $view = view('laravel_task_manager::clients.tasks.panels.jspanel.view.track_task')
             ->with('request_id', $request->request_id)
             ->with('task', $task)
             ->with('chats', $chats)
             ->with('assignment_id', $request->input('item_id'))
-            ->with('lfm_track', $lfm_track)
             ->with('user_id', $user_id)
             ->with('variable', $variable)
+            ->with('file', $file)
+            ->with('old_file', json_encode($old_file))
             ->render();
         $res =
             [
