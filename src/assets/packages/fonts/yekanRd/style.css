@@ -1,0 +1,20 @@
+@font-face{
+    font-family:IRANYekanM;
+    src: url('./src/IRANYekanRd-Medium.woff2') format('woff2'),
+    url('./src/IRANYekanRd-Medium.woff') format('woff')
+}
+@font-face{
+    font-family:IRANYekanB;
+    src:url('./src/IRANYekanRd-Bold.woff2') format('woff2'),
+    url('./src/IRANYekanRd-Bold.woff') format('woff')
+}
+@font-face{
+    font-family:IRANYekanEB;
+    src:url('./src/IRANYekanRd-ExtraBold.woff2') format('woff2'),
+    url('./src/IRANYekanRd-ExtraBold.woff') format('woff')
+}
+@font-face{
+    font-family:IRANYekanL;
+    src:url('./src/IRANYekanRd-Light.woff2') format('woff2'),
+    url('./src/IRANYekanRd-Light.woff') format('woff')
+}
