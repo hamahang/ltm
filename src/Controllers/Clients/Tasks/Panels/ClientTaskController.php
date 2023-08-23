@@ -2,101 +2,99 @@
 
 namespace Hamahang\LTM\Controllers\Clients\Tasks\Panels;
 
+use App\Http\Controllers\Controller;
 use App\Jobs\SendSMSArianaSMSPanel;
 use App\Jobs\SendSMSMagfaSingleSMS;
 use App\Mail\NewTaskNotify;
-use Hamahang\LTM\Models\Tasks\TaskTranscript;
-use DB;
 use DataTables;
-use Illuminate\Http\Request;
+use DB;
+use Hamahang\LTM\Controllers\KeywordController;
 use Hamahang\LTM\Models\Form;
 use Hamahang\LTM\Models\Subject;
-use Hamahang\LTM\Models\Tasks\Task;
-use App\Http\Controllers\Controller;
-use Hamahang\LTM\Models\Tasks\TaskStatus;
-use Hamahang\LTM\Models\Tasks\TaskPriority;
-use Hamahang\LTM\Models\Tasks\TaskAssignment;
-use Hamahang\LTM\Controllers\KeywordController;
 use Hamahang\LTM\Models\Tasks\ClientChatHistory;
+use Hamahang\LTM\Models\Tasks\Task;
+use Hamahang\LTM\Models\Tasks\TaskAssignment;
+use Hamahang\LTM\Models\Tasks\TaskPriority;
+use Hamahang\LTM\Models\Tasks\TaskStatus;
+use Hamahang\LTM\Models\Tasks\TaskTranscript;
 use Hamahang\LTM\Requests\Clients\Tasks\Panel\Add_Request;
 use Hamahang\LTM\Requests\Clients\Tasks\Panel\Client_Response_Request;
+use Illuminate\Http\Request;
 use Mail;
 
+/**
+ *
+ */
 class ClientTaskController extends Controller
 {
-    private function send_notification_to_employe($employee_id, $code)
+    /**
+     * @param $employee_id
+     * @param $code
+     * @return void
+     */
+    private function send_notification_to_employe($employee_id, $code): void
     {
 
         $user = config('laravel_task_manager.user_model')::find($employee_id);
         $setting = $user->ltm_setting;
-        if ($setting)
-        {
-            if ($setting->recive_sms_is_active == '1' && config('laravel_task_manager.send_sms_after_task_create_from_client'))
-            {
+        if ($setting) {
+            if ($setting->recive_sms_is_active == '1' && config('laravel_task_manager.send_sms_after_task_create_from_client')) {
                 $text = 'برای شما یک وظیفه جدید با شناسه ' . $code . ' در سامانه سیفام ایجاد شده است .';
-                if (config('magfa_sms.send_from') == 'magfa')
-                {
-                    dispatch((new SendSMSMagfaSingleSMS($text, $user->mobile))->onQueue('high'));
-                }
-                else
-                {
-                    dispatch((new SendSMSArianaSMSPanel($text, $user->mobile))->onQueue('high'));
+                if (config('magfa_sms.send_from') == 'magfa') {
+                    //dispatch((new SendSMSMagfaSingleSMS($text, $user->mobile))->onQueue('high'));
+                } else {
+                    //dispatch((new SendSMSArianaSMSPanel($text, $user->mobile))->onQueue('high'));
                 }
 
             }
-            if ($setting->recive_email_is_active == '1' && config('laravel_task_manager.send_email_after_task_create_from_client'))
-            {
+            if ($setting->recive_email_is_active == '1' && config('laravel_task_manager.send_email_after_task_create_from_client')) {
                 $info =
                     [
-                        'code'      => $code,
+                        'code' => $code,
                         'full_name' => $user->full_name,
-                        'email'     => $user->email
+                        'email' => $user->email
                     ];
                 Mail::to($user->email)->queue((new NewTaskNotify($info))->onQueue('high'));
             }
-        }
-        else
-        {
-            if (config('laravel_task_manager.send_sms_after_task_create_from_client'))
-            {
+        } else {
+            if (config('laravel_task_manager.send_sms_after_task_create_from_client')) {
                 $text = 'برای شما یک وظیفه جدید با شناسه ' . $code . ' در سامانه سیفام ایجاد شده است .';
-                if (config('magfa_sms.send_from') == 'magfa')
-                {
-                    dispatch((new SendSMSMagfaSingleSMS($text, $user->mobile))->onQueue('high'));
-                }
-                else
-                {
-                    dispatch((new SendSMSArianaSMSPanel($text, $user->mobile))->onQueue('high'));
+                if (config('magfa_sms.send_from') == 'magfa') {
+                    //dispatch((new SendSMSMagfaSingleSMS($text, $user->mobile))->onQueue('high'));
+                } else {
+                    //dispatch((new SendSMSArianaSMSPanel($text, $user->mobile))->onQueue('high'));
                 }
             }
-            if (config('laravel_task_manager.send_email_after_task_create_from_client'))
-            {
+            if (config('laravel_task_manager.send_email_after_task_create_from_client')) {
                 $info =
                     [
-                        'code'      => $code,
+                        'code' => $code,
                         'full_name' => $user->full_name,
-                        'email'     => $user->email
+                        'email' => $user->email
                     ];
                 Mail::to($user->email)->queue((new NewTaskNotify($info))->onQueue('high'));
             }
         }
 
-        return true;
     }
 
+    /**
+     * @param Request $request
+     * @return false|string
+     */
     public function JsPanelTask(Request $request)
     {
         $LFM_options = ['size_file' => 4 * 1000 * 1000, 'max_file_number' => 3, 'min_file_number' => 1, 'show_file_uploaded' => 'small', 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'task/uploaded'];
         $file = LFM_CreateModalUpload('attachment', 'showUploadFile', $LFM_options, 'result', 'UploadFileManager', false, 'show_result_button', 'آپلود فایل')['json'];
-        $old_file = [] ;
+        $old_file = [];
         $step = config('laravel_task_manager.task_get_step_function_name')($request->step_id);
         $user_id = config('laravel_task_manager.task_get_user_id')();
         $user_requestes = config('laravel_task_manager.task_file_no_list_in_clients_function_name')($user_id);
         $all_request_filter = get_file_no_list_in_client_for_filter($user_id);
-        $subjects = Subject::where('is_active','1')->select('id','title as text')->get() ;
+        $subjects = Subject::where('is_active', '1')->select('id', 'title as text')->get();
         return json_encode([
-            'header'    => 'درخواست پشتیبانی',
-            'content'   => view('laravel_task_manager::clients.tasks.panels.jspanel.content')
+            'header' => 'درخواست پشتیبانی',
+            'content' => view('laravel_task_manager::clients.tasks.panels.jspanel.content')
                 ->with('request_id', $request->request_id)
                 ->with('user_requestes', $user_requestes)
                 ->with('all_request_filter', $all_request_filter)
@@ -107,7 +105,7 @@ class ClientTaskController extends Controller
                 ->with('old_file', json_encode($old_file))
                 ->with('variable', $request->panelVariableName)
                 ->render(),
-            'footer'    => view('laravel_task_manager::clients.tasks.panels.jspanel.footer')
+            'footer' => view('laravel_task_manager::clients.tasks.panels.jspanel.footer')
                 ->with('type', 'insert')
                 ->with('variable', $request->panelVariableName)
                 ->with('user_requestes', $user_requestes)
@@ -135,6 +133,10 @@ class ClientTaskController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function getDatatable(Request $request)
     {
         $user_id = config('laravel_task_manager.task_get_user_id')();
@@ -142,14 +144,12 @@ class ClientTaskController extends Controller
         $my_assignments = $user->my_assigned_tasks_assignments();
         $my_assignments->select('id', 'task_id', 'assigner_id', 'created_at');
         $my_assignments = $my_assignments->with(['task.subject', 'employee', 'task.priority'])->select('ltm_task_assignments.*');
-        if ($request->filter_file_no)
-        {
+        if ($request->filter_file_no) {
             $my_assignments = $my_assignments->whereHas('task', function ($q) use ($request) {
                 $q->where('file_no', $request->filter_file_no);
             });
         }
-        if ($request->filter_step_id)
-        {
+        if ($request->filter_step_id) {
             $my_assignments = $my_assignments->whereHas('task', function ($q) use ($request) {
                 $q->where('step_id', $request->filter_step_id);
             });
@@ -179,8 +179,7 @@ class ClientTaskController extends Controller
             ->addColumn('status', function ($data) {
                 $percent = ' (' . (isset($data->statuses->first()->percent) ? $data->statuses->first()->percent : 0) . '%)';
 
-                if (isset($data->statuses->first()->status_name))
-                {
+                if (isset($data->statuses->first()->status_name)) {
                     return $data->statuses->first()->status_name . (1 == $data->statuses->first()->status ? $percent : null);
                 }
             })
@@ -199,11 +198,14 @@ class ClientTaskController extends Controller
         return $r;
     }
 
+    /**
+     * @param Add_Request $request
+     * @return array
+     */
     public function addTask(Add_Request $request)
     {
         DB::beginTransaction();
-        try
-        {
+        try {
             // initialize variables for general
             $general_type = 1;
             $general_importance = $request->input('general_importance', false);
@@ -237,8 +239,7 @@ class ClientTaskController extends Controller
             $setting_transferable = (string)(int)(bool)$request->input('setting_transferable', '0');
             $setting_end_on_assigner_accept = (string)(int)(bool)$request->input('setting_end_on_assigner_accept', '0');
             $setting_rejectable = (string)(int)(bool)$request->input('setting_rejectable', '0');
-            if (!check_subject_task_permission($general_subject_id))
-            {
+            if (!check_subject_task_permission($general_subject_id)) {
                 $res =
                     [
                         'success' => false,
@@ -256,8 +257,7 @@ class ClientTaskController extends Controller
             }
             // insert
             $user_id = config('laravel_task_manager.task_get_user_id')();
-            foreach ($general_users_id as $employee_id)
-            {
+            foreach ($general_users_id as $employee_id) {
                 // task
                 $description_values_transcripts = [];
                 $start_datetime = date('Y-m-d H:i:00');
@@ -267,20 +267,14 @@ class ClientTaskController extends Controller
                 $task->subject_id = $general_subject_id;
                 $task->description = $general_description;
                 $task->type = $general_type;
-                if ($step_id)
-                {
+                if ($step_id) {
                     $task->step_id = $step_id;
-                }
-                else
-                {
+                } else {
                     $task->step_id = $general_step_id;
                 }
-                if ($file_no)
-                {
+                if ($file_no) {
                     $task->file_no = $file_no;
-                }
-                else
-                {
+                } else {
                     $task->file_no = $request_id;
                 }
                 $task->start_time = $start_datetime;
@@ -304,18 +298,15 @@ class ClientTaskController extends Controller
                 $task_assignment->integrated_task_id = 0;
                 $task_assignment->rejected_at = null;
                 $task_assignment->action_do_form_id = $setting_action_do_form_id;
-                if ($setting_action_do_form_id)
-                {
+                if ($setting_action_do_form_id) {
                     $task_assignment->action_do_fields_code = Form::generate_fields_code($setting_action_do_form_id);
                 }
                 $task_assignment->action_transfer_form_id = $setting_action_transfer_form_id;
-                if ($setting_action_transfer_form_id)
-                {
+                if ($setting_action_transfer_form_id) {
                     $task_assignment->action_transfer_fields_code = Form::generate_fields_code($setting_action_transfer_form_id);
                 }
                 $task_assignment->action_reject_form_id = $setting_action_reject_form_id;
-                if ($setting_action_reject_form_id)
-                {
+                if ($setting_action_reject_form_id) {
                     $task_assignment->action_reject_fields_code = Form::generate_fields_code($setting_action_reject_form_id);
                 }
                 $task_assignment->transferable = '1';
@@ -332,8 +323,7 @@ class ClientTaskController extends Controller
                 $task_status->created_by = $user_id;
                 $task_status->save();
                 // priority
-                foreach ([$user_id, $employee_id] as $task_auth_and_employee_id)
-                {
+                foreach ([$user_id, $employee_id] as $task_auth_and_employee_id) {
                     $task_priority = new TaskPriority();
                     $task_priority->task_id = $task->id;
                     $task_priority->user_id = $task_auth_and_employee_id;
@@ -343,8 +333,7 @@ class ClientTaskController extends Controller
                     $task_priority->save();
                 }
                 $general_transcripts_cc = config('laravel_task_manager.client_task_user_transcript_array_id')();
-                foreach ($general_transcripts_cc as $transcript_user_id)
-                {
+                foreach ($general_transcripts_cc as $transcript_user_id) {
                     $task_transcript = new TaskTranscript();
                     $task_transcript->task_assignment_id = $task_assignment->id;
                     $task_transcript->user_id = $transcript_user_id;
@@ -359,9 +348,8 @@ class ClientTaskController extends Controller
 
                 }
                 $general_keywords_array = [];
-                foreach ($general_keywords as $keyword)
-                {
-                    $general_keywords_array[ $keyword ] = ['is_active' => 1, 'created_by' => $user_id,];
+                foreach ($general_keywords as $keyword) {
+                    $general_keywords_array[$keyword] = ['is_active' => 1, 'created_by' => $user_id,];
                 }
                 $task->keywords()->attach($general_keywords_array);
                 LFM_SaveMultiFile($task, 'attachment');
@@ -374,24 +362,22 @@ class ClientTaskController extends Controller
                 [
                     'success' => true,
                     'message' => 'با موفقیت انجام شد',
-                    'title'   => 'ایجاد وظیفه',
+                    'title' => 'ایجاد وظیفه',
                 ];
 
             DB::commit();
 
             return $res;
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             log_exeption($e);
             DB::rollback();
-            if (in_array($request->getClientIp(), ['89.165.122.115', '185.57.167.118', '127.0.0.1']))
-            {
+            if (in_array($request->getClientIp(), ['89.165.122.115', '185.57.167.118', '127.0.0.1'])) {
                 dd($e);
             }
             $res =
                 [
                     'success' => false,
-                    'status'  => "-1",
+                    'status' => "-1",
                     'message' => [['title' => 'خطا درثبت اطلاعات:', 'items' => ['در ثبت اطلاعات خطا روی داده است لطفا دوباره سعی کنید', 'درصورت تکرار این خطا لطفا با مدیریت تماس حاصل فرمایید.']]]
                 ];
 
@@ -399,6 +385,10 @@ class ClientTaskController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function getTrackingView(Request $request)
     {
         $assignment_id = ltm_decode_ids($request->input('item_id'), 0);
@@ -409,7 +399,7 @@ class ClientTaskController extends Controller
         $task = Task::where('id', $assignment->task_id)->with('subject', 'assignment.assigner', 'assignment.employee', 'priority', 'keywords', 'logs')->first();
         $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'task/chat', 'show_file_uploaded' => 'small'];
         $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
-        $old_file = [] ;
+        $old_file = [];
         $view = view('laravel_task_manager::clients.tasks.panels.jspanel.view.track_task')
             ->with('request_id', $request->request_id)
             ->with('task', $task)
@@ -423,17 +413,20 @@ class ClientTaskController extends Controller
         $res =
             [
                 'success' => true,
-                'view'    => $view,
+                'view' => $view,
             ];
 
         return $res;
     }
 
+    /**
+     * @param Client_Response_Request $request
+     * @return array
+     */
     public function sendClientResponse(Client_Response_Request $request)
     {
         DB::beginTransaction();
-        try
-        {
+        try {
             $user_id = config('laravel_task_manager.task_get_user_id')();
             $assignment_id = ltm_decode_ids($request->input('assignment_id'), 0);
             $chat = new ClientChatHistory();
@@ -445,27 +438,24 @@ class ClientTaskController extends Controller
             DB::commit();
             $res = [
                 'success' => true,
-                'result'  => $itemFile
+                'result' => $itemFile
             ];
 
             return $res;
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             log_exeption($e);
             DB::rollback();
-            if (in_array($request->getClientIp(), ['89.165.122.115', '185.57.167.118', '127.0.0.1']))
-            {
+            if (in_array($request->getClientIp(), ['89.165.122.115', '185.57.167.118', '127.0.0.1'])) {
                 dd($e);
             }
             $res =
                 [
                     'success' => false,
-                    'status'  => "-1",
+                    'status' => "-1",
                     'message' => [['title' => 'خطا درثبت اطلاعات:', 'items' => ['در ثبت اطلاعات خطا روی داده است لطفا دوباره سعی کنید', 'درصورت تکرار این خطا لطفا با مدیریت تماس حاصل فرمایید.']]]
                 ];
 
             return response()->json($res);
         }
-
     }
 }
