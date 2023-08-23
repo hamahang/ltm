@@ -106,7 +106,7 @@ Route::group(['prefix' => config('laravel_task_manager.backend_ltm_route_prefix'
         });
         Route::group(['prefix' => 'users','namespace' => 'Users' ], function()
         {
-            Route::get('/', [ 'as' => 'backend.users.index', 'uses' => 'UserController@index']);
+            Route::get('/', [ 'as' => 'ltm.backend.users.index', 'uses' => 'UserController@index']);
             Route::post('get_users', ['as' => 'ltm.backend.users.get_users', 'uses' => 'UserController@get_users']);
             Route::post('save_user', ['as' => 'ltm.backend.users.save_user', 'uses' => 'UserController@save_user']);
             Route::post('edit_user', ['as' => 'ltm.backend.users.edit_user', 'uses' => 'UserController@edit_user']);
