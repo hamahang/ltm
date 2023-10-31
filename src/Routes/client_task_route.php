@@ -2,7 +2,7 @@
 
 if (config('laravel_task_manager.task_show_client_route_function_name')())
 {
-    Route::group(['prefix' => config('laravel_task_manager.client_ltm_route_prefix'), 'namespace' => 'Hamahang\LTM\Controllers', 'middleware' => config('laravel_task_manager.backend_ltm_middlewares')], function () {
+    Route::group(['prefix' => config('laravel_task_manager.client_ltm_route_prefix'), 'namespace' => 'Hamahang\LTM\Controllers', 'middleware' => config('laravel_task_manager.client_ltm_middlewares')], function () {
         Route::group(['prefix' => 'clients', 'namespace' => 'Clients'], function()
         {
             Route::group(['prefix' => 'tasks', 'namespace' => 'Tasks', ], function()
