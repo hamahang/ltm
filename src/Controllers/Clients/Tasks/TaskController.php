@@ -2,7 +2,6 @@
 
 namespace Hamahang\LTM\Controllers\Clients\Tasks;
 
-use App\Jobs\SendSMSArianaSMSPanel;
 use App\Jobs\SendSMSMagfaSingleSMS;
 use App\Mail\NewTaskNotify;
 use Hamahang\LTM\Controllers\Controller;
@@ -77,11 +76,11 @@ class TaskController extends Controller
             {
                 if (config('magfa_sms.send_from') == 'magfa')
                 {
-                    dispatch((new SendSMSMagfaSingleSMS($text, $user->mobile))->onQueue('high'));
+                    //dispatch((new SendSMSMagfaSingleSMS($text, $user->mobile))->onQueue('high'));
                 }
                 else
                 {
-                    dispatch((new SendSMSArianaSMSPanel($text, $user->mobile))->onQueue('high'));
+                    //dispatch((new SendSMSArianaSMSPanel($text, $user->mobile))->onQueue('high'));
                 }
             }
         }

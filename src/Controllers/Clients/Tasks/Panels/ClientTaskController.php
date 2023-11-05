@@ -3,7 +3,6 @@
 namespace Hamahang\LTM\Controllers\Clients\Tasks\Panels;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\SendSMSArianaSMSPanel;
 use App\Jobs\SendSMSMagfaSingleSMS;
 use App\Mail\NewTaskNotify;
 use DataTables;
