@@ -84,7 +84,7 @@ trait ltmUserTrait {
      */
     public function my_assigned_tasks_assignments()
     {
-        $rows = $this->hasMany('Hamahang\LTM\Models\Tasks\TaskAssignment', 'assigner_id', 'id');
+        $rows = $this->hasMany('Hamahang\LTM\Models\Tasks\TaskAssignment', 'assigner_id', 'id')->groupBy('task_id');
         return $rows;
     }
 
