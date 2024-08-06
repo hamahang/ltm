@@ -76,7 +76,7 @@
                     $('a[href="#task_tracing"]').click();
                     $('#track_description').val('');
                     upload_image.$refs.uploadImage.resetForm()
-                    datatable_reload();
+                    //datatable_reload();
                 } else {
                     showMessages(result.message, 'form_message_box_message', 'error', formElement);
                     showErrors(form, result.errors);
