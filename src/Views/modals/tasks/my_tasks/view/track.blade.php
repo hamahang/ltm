@@ -44,9 +44,10 @@
     <div class="well">موردی برای نمایش وجود ندارد.</div>
 @endif
 <div class="space-10"></div>
-@if($is_final_assigment)
+@if($is_final_assigment && !$task_terminate)
     <div id="form_message_box_track" class="form_message_area"></div>
     <form class="form-horizontal form_task_add" id="form_track_task" name="form_track_task">
+        <input type="hidden" name="task_id" value="{{@$task_id}}"/>
         <input type="hidden" name="assignment_id" value="{{$assignment_id}}">
         <input type="hidden" name="type" value="response">
         <div class="form-group">
@@ -75,5 +76,10 @@
         </div>
         <div class="clearfix"></div>
         <button type="submit" id="submit_insert_track" class="hidden"></button>
+    </form>
+
+    <form class="form-horizontal form_terminate" id="form_terminate" name="form_terminate">
+        <input type="hidden" name="task_id" value="{{@$task_id}}"/>
+        <button type="submit" id="submit_terminate" class="hidden"></button>
     </form>
 @endif

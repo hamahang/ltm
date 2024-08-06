@@ -35,12 +35,25 @@ class TaskAssignment extends Model
         return $this->hasOne(config('laravel_task_manager.user_model'), 'id', 'assigner_id');
     }
 
+    public function assigner_alt()
+    {
+        return $this->hasOne(config('laravel_task_manager.user_model_alt'), 'id', 'assigner_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function employee()
     {
         return $this->belongsTo(config('laravel_task_manager.user_model'), 'employee_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function employee_alt()
+    {
+        return $this->belongsTo(config('laravel_task_manager.user_model_alt'), 'employee_id', 'id');
     }
 
     /**
@@ -106,10 +119,15 @@ class TaskAssignment extends Model
     public function getActionDoFormResultsAttribute()
     {
         $form_id = $this->action_do_form_id;
+
         return $this->form_results()
             ->where('type', 'do')
             ->with('form_field.form')
-            ->whereHas('form_field', function($q) use ($form_id) { $q->whereHas('form', function($q2) use ($form_id) { $q2->where('id', $form_id); }); })
+            ->whereHas('form_field', function ($q) use ($form_id) {
+                $q->whereHas('form', function ($q2) use ($form_id) {
+                    $q2->where('id', $form_id);
+                });
+            })
             ->get();
     }
 
@@ -119,10 +137,15 @@ class TaskAssignment extends Model
     public function getActionTransferFormResultsAttribute()
     {
         $form_id = $this->action_transfer_form_id;
+
         return $this->form_results()
             ->where('type', 'transfer')
             ->with('form_field.form')
-            ->whereHas('form_field', function($q) use ($form_id) { $q->whereHas('form', function($q2) use ($form_id) { $q2->where('id', $form_id); }); })
+            ->whereHas('form_field', function ($q) use ($form_id) {
+                $q->whereHas('form', function ($q2) use ($form_id) {
+                    $q2->where('id', $form_id);
+                });
+            })
             ->get();
     }
 
@@ -132,10 +155,15 @@ class TaskAssignment extends Model
     public function getActionRejectFormResultsAttribute()
     {
         $form_id = $this->action_reject_form_id;
+
         return $this->form_results()
             ->where('type', 'reject')
             ->with('form_field.form')
-            ->whereHas('form_field', function($q) use ($form_id) { $q->whereHas('form', function($q2) use ($form_id) { $q2->where('id', $form_id); }); })
+            ->whereHas('form_field', function ($q) use ($form_id) {
+                $q->whereHas('form', function ($q2) use ($form_id) {
+                    $q2->where('id', $form_id);
+                });
+            })
             ->get();
     }
 
@@ -153,6 +181,7 @@ class TaskAssignment extends Model
     public function getEmployeePriorityAttribute()
     {
         $r = $this->task->priority()->where('user_id', $this->employee_id)->first();
+
         return $r ? $r : $this->assigner_priority;
     }
 
@@ -186,10 +215,11 @@ class TaskAssignment extends Model
      */
     public function getCurrentStatusAttribute()
     {
-        $res = TaskStatus::whereHas('assignment', function($query) {
+        $res = TaskStatus::whereHas('assignment', function ($query) {
             $query->where('task_id', $this->task_id);
         })
-        ->orderBy('id', 'desc');
+            ->orderBy('id', 'desc');
+
         return $res ? $res->first() : false;
     }
 

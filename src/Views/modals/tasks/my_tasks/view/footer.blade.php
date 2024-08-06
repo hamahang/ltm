@@ -28,9 +28,12 @@
 @if (2 != $task->assignment->current_status->status)
     <button class="btn btn-primary btn_action" style="display: {!! 'action' == $default_tab ? 'block' : 'none;' !!}">اقدام</button>
 @endif
-
-<button class="btn btn-primary btn_save_track " style="display: none">ارسال پیام</button>
-
+@if(isset($task_terminate) && !$task_terminate)
+    <button class="btn btn-primary btn_save_track " style="display: none">ارسال پیام</button>
+    <button class="btn btn-primary btn_terminate " style="display: none">مختومگی درخواست</button>
+@elseif(isset($task_terminate) && $task_terminate)
+    <label style="width:90px;">مختومه شده</label>
+@endif
 
 @include('laravel_task_manager::modals.tasks.my_tasks.view.helpers.style')
 @include('laravel_task_manager::modals.tasks.my_tasks.view.helpers.script')

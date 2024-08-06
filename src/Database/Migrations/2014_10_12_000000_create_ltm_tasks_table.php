@@ -18,8 +18,7 @@ class CreateTasksTable extends Migration
      */
     public function up()
     {
-        Schema::create(self::table, function (Blueprint $table)
-        {
+        Schema::create(self::table, function (Blueprint $table) {
             $table->increments('id');
             $table->integer('started_by');
             $table->string('code');
@@ -34,9 +33,12 @@ class CreateTasksTable extends Migration
             $table->integer('template_id');
             $table->enum('is_active', ['0', '1']);
             $table->integer('created_by');
+            $table->string('vin')->nullable()->default(null);
+            $table->integer('vin_form_id')->nullable()->default(null);
+            $table->timestamp('terminated_at')->nullable()->default(null);
             $table->timestamps();
             $table->softDeletes();
-            $table->index(['code', ], self::table . '_unique_code', 'BTREE');
+            $table->index(['code',], self::table . '_unique_code', 'BTREE');
         });
     }
 

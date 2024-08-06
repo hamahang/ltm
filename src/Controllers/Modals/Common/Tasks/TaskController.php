@@ -31,9 +31,10 @@ class TaskController extends Controller
         $LFM = LFM_CreateModalFileManager('attachment', $LFM_options, 'insert', 'callback', null, null, null, 'انتخاب فایل/ها');
         $subjects = Subject::all();
         $header = view('laravel_task_manager::modals.tasks.task.add.header')->render();
-        $content =  view('laravel_task_manager::modals.tasks.task.add.content')->with(compact('LFM', 'subjects'))->render();
+        $content = view('laravel_task_manager::modals.tasks.task.add.content')->with(compact('LFM', 'subjects'))->render();
         $footer = view('laravel_task_manager::modals.tasks.task.add.footer')->render();
-        $r = json_encode(['header' => $header, 'content' => $content, 'footer' => $footer, ]);
+        $r = json_encode(['header' => $header, 'content' => $content, 'footer' => $footer,]);
+
         return $r;
     }
 
@@ -52,16 +53,17 @@ class TaskController extends Controller
                 $user = $transcript->user;
                 $transcripts_data[] =
                     [
-                        'row' => $row,
+                        'row'            => $row,
                         'user_full_name' => $user->full_name,
-                        'user_username' => $user->username,
-                        'user_image' => "<img src='$user->image' style='border: gray solid 1px; height: 32px; padding: 2px; width: 32px; border-radius: 2px;' />",
-                        'transcript' => $transcript->type_name,
+                        'user_username'  => $user->username,
+                        'user_image'     => "<img src='$user->image' style='border: gray solid 1px; height: 32px; padding: 2px; width: 32px; border-radius: 2px;' />",
+                        'transcript'     => $transcript->type_name,
                         'user_hashed_id' => ltm_encode_ids([$user->id]),
                     ];
                 $row++;
             }
         }
+
         return ltm_array_to_string_array($transcripts_data);
     }
 
@@ -75,13 +77,13 @@ class TaskController extends Controller
         $r = null;
         $template = null;
         $data =
-        [
-            'F' => null,
-            'P' => null,
-            'M' => null,
-            'N' => null,
-            'L' => null,
-        ];
+            [
+                'F' => null,
+                'P' => null,
+                'M' => null,
+                'N' => null,
+                'L' => null,
+            ];
         $assignments = $task->assignments;
         $assignments_count = count($assignments);
         $first_assigner_id = $assignments->first()->assigner->id;
@@ -309,9 +311,10 @@ class TaskController extends Controller
         }
         $r['data'] = $data;
         $r['template'] = $template->render();
-        $r['assigner'] = $data['P'] ? : $data['F'] ? : $data['M'];
-        $r['employee'] = $data['N'] ? : $data['L'] ? : $data['M'];
+        $r['assigner'] = $data['P'] ?: $data['F'] ?: $data['M'];
+        $r['employee'] = $data['N'] ?: $data['L'] ?: $data['M'];
         $r['is_creator'] = $first_assigner_id == auth()->id();
+
         return $r;
     }
 
@@ -329,6 +332,7 @@ class TaskController extends Controller
         $r['template'] = view('laravel_task_manager::modals.tasks.progress.transcript.N-M-P')->with(['data' => $data]);
         $r['assigner'] = $data['P'];
         $r['employee'] = $data['N'];
+
         return $r;
     }
 
@@ -345,7 +349,7 @@ class TaskController extends Controller
         if ($t == '1')
         {
             $task = Task::with('subject', 'assignment.assigner', 'assignment.employee', 'priority', 'keywords', 'logs')->find($id);
-            $assignment = $task->assignments()->where( [
+            $assignment = $task->assignments()->where([
                 ['ltm_task_assignments.task_id', '=', $id],
                 ['ltm_task_assignments.transmitter_id', '=', '0'],
                 ['ltm_task_assignments.transferred_to_id', '=', '0'],
@@ -353,25 +357,27 @@ class TaskController extends Controller
                 ['ltm_task_assignments.rejected_at', null, 'IS NULL'],
                 ['ltm_task_assignments.is_active', '1'],
             ])->first();
-            $assignment_id = $assignment->id ;
-        }
-        else
+            $assignment_id = $assignment->id;
+        } else
         {
             $assignment_id = ltm_decode_ids($request->input('assignment_id'), 0);
             $assignment = TaskAssignment::with('confirmation')->find($assignment_id);
-            $task = Task::where('id',  $assignment->task_id)->with('subject', 'assignment.assigner', 'assignment.employee', 'priority', 'keywords', 'logs')->first();
+            $task = Task::where('id', $assignment->task_id)->with('subject', 'assignment.assigner', 'assignment.employee', 'priority', 'keywords', 'logs')->first();
         }
 
-        $is_final_assigment = false ;
-        $final_assigment = $task->assignments()->orderBY('id','desc')->first();
-        if (isset($final_assigment) && isset($final_assigment->employee_id) && $final_assigment->employee_id  == auth()->id())
+        $is_final_assigment = false;
+        $final_assigment = $task->assignments()->orderBY('id', 'desc')->first();
+        if (isset($final_assigment) && isset($final_assigment->employee_id) && $final_assigment->employee_id == auth()->id())
         {
-            $is_final_assigment = true ;
+            $is_final_assigment = true;
         }
-        $chats = ClientChatHistory::with('user')->where('assignment_id',$assignment_id)->get() ;
+        $chats = ClientChatHistory::with('user')->where('assignment_id', $assignment_id)->get();
         $LFM = LFM_ShowMultiFile($task);
-        if (isset($LFM['data'])) { $LFM_show = empty($LFM['data']) ? '<div class="well">موردی برای نمایش وجود ندارد.</div>' : $LFM['view']['grid']; }
-        $common_with = ['default_tab' => $default_tab, 'task' => $task, 'assignment' => $assignment, ];
+        if (isset($LFM['data']))
+        {
+            $LFM_show = empty($LFM['data']) ? '<div class="well">موردی برای نمایش وجود ندارد.</div>' : $LFM['view']['grid'];
+        }
+        $common_with = ['default_tab' => $default_tab, 'task' => $task, 'assignment' => $assignment,];
         $action_do_form_fields = Form::generate_fields($task->assignment->action_do_form_id, $task->assignment->action_do_fields_code);
         $action_transfer_form_fields = Form::generate_fields($task->assignment->action_transfer_form_id, $task->assignment->action_transfer_fields_code);
         $action_reject_form_fields = Form::generate_fields($task->assignment->action_reject_form_id, $task->assignment->action_reject_fields_code);
@@ -381,17 +387,17 @@ class TaskController extends Controller
             $transcripts = $assignment->transcripts_cc;
             $header_with = [];
             $content_with =
-            [
-                'action_do_form_fields' => $action_do_form_fields,
-                'action_transfer_form_fields' => $action_transfer_form_fields,
-                'action_reject_form_fields' => $action_reject_form_fields,
-                'transcripts_data' => $transcripts,
-                'chats' => $chats,
-                'user_id' => auth()->id(),
-                'is_final_assigment' => $is_final_assigment,
-                'LFM' => $LFM,
-                'LFM_show' => $LFM_show,
-            ];
+                [
+                    'action_do_form_fields'       => $action_do_form_fields,
+                    'action_transfer_form_fields' => $action_transfer_form_fields,
+                    'action_reject_form_fields'   => $action_reject_form_fields,
+                    'transcripts_data'            => $transcripts,
+                    'chats'                       => $chats,
+                    'user_id'                     => auth()->id(),
+                    'is_final_assigment'          => $is_final_assigment,
+                    'LFM'                         => $LFM,
+                    'LFM_show'                    => $LFM_show,
+                ];
             $footer_with = ['transcripts_datatable_data' => $this->transcripts_datatable_data($transcripts),];
             $header = view('laravel_task_manager::modals.tasks.my_transcript_tasks.view.header')->with(array_merge($common_with, $header_with))->render();
             $content = view('laravel_task_manager::modals.tasks.my_transcript_tasks.view.content')->with(array_merge($common_with, $content_with))->render();
@@ -401,38 +407,45 @@ class TaskController extends Controller
         } else
         {
             $progress = $this->progress($task);
-            $assigner_progress_id = $progress['assigner']->id ;
-            $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar','png', 'jpg'], 'path' => 'task/chat', 'show_file_uploaded' => 'original'];
+            $assigner_progress_id = $progress['assigner']->id;
+            $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar', 'png', 'jpg'], 'path' => 'task/chat', 'show_file_uploaded' => 'original'];
             $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
-            $old_file = [] ;
+            $old_file = [];
 
             $track_view = view('laravel_task_manager::modals.tasks.my_tasks.view.track')
-                ->with('chats',$chats)
-                ->with('file',$file)
-                ->with('variable','trackInsert')
-                ->with('old_file',json_encode($old_file))
-                ->with('is_final_assigment',$is_final_assigment)
-                ->with('assignment_id' , ltm_encode_ids([$assignment_id]))
+                ->with('chats', $chats)
+                ->with('file', $file)
+                ->with('variable', 'trackInsert')
+                ->with('old_file', json_encode($old_file))
+                ->with('is_final_assigment', $is_final_assigment)
+                ->with('assignment_id', ltm_encode_ids([$assignment_id]))
+                ->with('task_id', @$task->id)
+                ->with('task_terminate', ($task && $task->terminated_at) ? true : false)
                 ->render();
+            $task_terminate = ($task && $task->terminated_at) ? true : false;
             switch (true)
             {
+
                 case ($progress['employee']->id == auth()->id()) || $assigner_progress_id == auth()->id():
                     $common_with['progress'] = $progress;
                     $transcripts = @$assignment->transcripts_cc;
                     $header_with = [];
+
                     $content_with =
-                    [
-                        'action_do_form_fields' => $action_do_form_fields,
-                        'action_transfer_form_fields' => $action_transfer_form_fields,
-                        'action_reject_form_fields' => $action_reject_form_fields,
-                        'transcripts_data' => $transcripts,
-                        'is_final_assigment' => $is_final_assigment,
-                        'assignment_id' => ltm_encode_ids([$assignment_id]),
-                        'track_view' => $track_view,
-                        'user_id' => auth()->id(),
-                        'LFM' => $LFM, 'LFM_show' => $LFM_show,
-                    ];
-                    $footer_with = ['transcripts_datatable_data' => $this->transcripts_datatable_data($transcripts), ];
+                        [
+                            'action_do_form_fields'       => $action_do_form_fields,
+                            'action_transfer_form_fields' => $action_transfer_form_fields,
+                            'action_reject_form_fields'   => $action_reject_form_fields,
+                            'transcripts_data'            => $transcripts,
+                            'is_final_assigment'          => $is_final_assigment,
+                            'assignment_id'               => ltm_encode_ids([$assignment_id]),
+                            'track_view'                  => $track_view,
+                            'user_id'                     => auth()->id(),
+                            'task_id'                     => @$task->id,
+                            'task_terminate'              => $task_terminate,
+                            'LFM'                         => $LFM, 'LFM_show' => $LFM_show,
+                        ];
+                    $footer_with = ['transcripts_datatable_data' => $this->transcripts_datatable_data($transcripts), 'task_terminate' => $task_terminate];
                     $header = view('laravel_task_manager::modals.tasks.my_tasks.view.header')->with(array_merge($common_with, $header_with))->render();
                     $content = view('laravel_task_manager::modals.tasks.my_tasks.view.content')->with(array_merge($common_with, $content_with))->render();
                     $footer = view('laravel_task_manager::modals.tasks.my_tasks.view.footer')->with(array_merge($common_with, $footer_with))->render();
@@ -443,19 +456,21 @@ class TaskController extends Controller
                     $transcripts = $assignment->transcripts;
                     $header_with = [];
                     $content_with =
-                    [
-                        'action_do_form_fields' => $action_do_form_fields,
-                        'action_transfer_form_fields' => $action_transfer_form_fields,
-                        'action_reject_form_fields' => $action_reject_form_fields,
-                        'transcripts_data' => $transcripts,
-                        'is_final_assigment' => $is_final_assigment,
-                        'assignment_id' => ltm_encode_ids([$assignment_id]),
-                        'track_view' => $track_view,
-                        'chats' => $chats,
-                        'user_id' => auth()->id(),
-                        'LFM' => $LFM, 'LFM_show' => $LFM_show,
-                    ];
-                    $footer_with = ['transcripts_datatable_data' => $this->transcripts_datatable_data($transcripts), ];
+                        [
+                            'action_do_form_fields'       => $action_do_form_fields,
+                            'action_transfer_form_fields' => $action_transfer_form_fields,
+                            'action_reject_form_fields'   => $action_reject_form_fields,
+                            'transcripts_data'            => $transcripts,
+                            'is_final_assigment'          => $is_final_assigment,
+                            'assignment_id'               => ltm_encode_ids([$assignment_id]),
+                            'track_view'                  => $track_view,
+                            'chats'                       => $chats,
+                            'user_id'                     => auth()->id(),
+                            'task_id'                     => @$task->id,
+                            'task_terminate'              => $task_terminate,
+                            'LFM'                         => $LFM, 'LFM_show' => $LFM_show,
+                        ];
+                    $footer_with = ['transcripts_datatable_data' => $this->transcripts_datatable_data($transcripts), 'task_terminate' => $task_terminate,];
                     $header = view('laravel_task_manager::modals.tasks.my_assigned_tasks.view.header')->with(array_merge($common_with, $header_with))->render();
                     $content = view('laravel_task_manager::modals.tasks.my_assigned_tasks.view.content')->with(array_merge($common_with, $content_with))->render();
                     $footer = view('laravel_task_manager::modals.tasks.my_assigned_tasks.view.footer')->with(array_merge($common_with, $footer_with))->render();
@@ -471,8 +486,8 @@ class TaskController extends Controller
         $visit->ip = \Request::ip();
         $visit->created_by = auth()->id();
         $visit->save();
-        $r = json_encode(['header' => $header, 'content' => $content, 'footer' => $footer, ]);
-//        dd($task->assignments->toArray());
+        $r = json_encode(['header' => $header, 'content' => $content, 'footer' => $footer,]);
+
         return $r;
     }
 
@@ -494,44 +509,45 @@ class TaskController extends Controller
         foreach ($tasks as $task)
         {
             $choices[] =
-            [
-                'row' => $row,
-                'code' => $task->code,
-                'subject' => $task->subject->title,
-                'title' => $task->title,
-                'assigner' => $task->assignment->assigner->full_name,
-                'importance' => $task->priority->first()->importance_name,
-                'immediate' => $task->priority->first()->immediate_name,
-                //'operations' => '<i class="fa fa-times pointer" style="color: red;" onclick="$(this).parent().parent().remove();"></i>',
-                'hashed_id' => ltm_encode_ids([$task->id]),
-            ];
+                [
+                    'row'        => $row,
+                    'code'       => $task->code,
+                    'subject'    => $task->subject->title,
+                    'title'      => $task->title,
+                    'assigner'   => $task->assignment->assigner->full_name,
+                    'importance' => $task->priority->first()->importance_name,
+                    'immediate'  => $task->priority->first()->immediate_name,
+                    //'operations' => '<i class="fa fa-times pointer" style="color: red;" onclick="$(this).parent().parent().remove();"></i>',
+                    'hashed_id'  => ltm_encode_ids([$task->id]),
+                ];
             $row++;
         }
         $choices_datatable_data = ltm_array_to_string_array($choices);
         $hashed_ids = ltm_encode_ids($ids);
         $LFM_options =
-        [
-            'size_file' => 1000,
-            'max_file_number' => 5,
-            'min_file_number' => 2,
-            'show_file_uploaded' => 'medium',
-            'true_file_extension' => ['png', 'jpg', 'jpeg', 'bmp', 'zip', 'rar', 'docx', 'xlsx'],
-            'path' => 'test'
-        ];
+            [
+                'size_file'           => 1000,
+                'max_file_number'     => 5,
+                'min_file_number'     => 2,
+                'show_file_uploaded'  => 'medium',
+                'true_file_extension' => ['png', 'jpg', 'jpeg', 'bmp', 'zip', 'rar', 'docx', 'xlsx'],
+                'path'                => 'test'
+            ];
         $LFM = LFM_CreateModalFileManager('attachment', $LFM_options, 'insert', 'callback', null, null, null, 'انتخاب فایل/ها');
         $content_with =
-        [
-            'hashed_ids' => $hashed_ids,
-            'LFM' => $LFM,
-        ];
+            [
+                'hashed_ids' => $hashed_ids,
+                'LFM'        => $LFM,
+            ];
         $footer_with =
-        [
-            'choices_datatable_data' => $choices_datatable_data,
-        ];
+            [
+                'choices_datatable_data' => $choices_datatable_data,
+            ];
         $header = view('laravel_task_manager::modals.tasks.task.integrate.header')->render();
         $content = view('laravel_task_manager::modals.tasks.task.integrate.content')->with($content_with)->render();
         $footer = view('laravel_task_manager::modals.tasks.task.integrate.footer')->with($footer_with)->render();
         $r = json_encode(['header' => $header, 'content' => $content, 'footer' => $footer,]);
+
         return $r;
     }
 }

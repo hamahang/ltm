@@ -55,6 +55,7 @@ Route::group(['prefix' => config('laravel_task_manager.backend_ltm_route_prefix'
                 Route::post('action', ['uses' => 'MyTaskController@action', 'as' => 'ltm.clients.tasks.my_tasks.action', ]);
                 Route::post('save_track', ['uses' => 'MyTaskController@save_track', 'as' => 'ltm.clients.tasks.my_tasks.save_track', ]);
                 Route::post('save_timeout', ['uses' => 'MyTaskController@save_timeout', 'as' => 'ltm.clients.tasks.my_tasks.save_timeout', ]);
+                Route::post('terminate', ['uses' => 'MyTaskController@terminate', 'as' => 'ltm.clients.tasks.my_tasks.terminate']);
             });
             Route::group(['prefix' => 'my_transcript_tasks', ], function()
             {

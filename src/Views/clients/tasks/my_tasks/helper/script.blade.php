@@ -84,6 +84,13 @@
         {
             'searchable': false,
             'sortable': false,
+            'title': 'ارجاع دهنده',
+            'data': 'last_employ',
+            'name': 'last_employ'
+        },
+        {
+            'searchable': false,
+            'sortable': false,
             'title': 'وضعیت',
             'data': 'status',
             'name': 'status'

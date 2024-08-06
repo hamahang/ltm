@@ -53,11 +53,12 @@ class MyTaskController extends Controller
         $my_tasks_timer_timeout = Cookie::get('my_tasks_timer_timeout', config('tasks.timer_default_timeout'));
         $my_tasks_calendar_timer_timeout = Cookie::get('my_tasks_calendar_timer_timeout', config('tasks.calendar_timer_default_timeout'));
         $with =
-        [
-            'assigners' => $assigners,
-            'my_tasks_timer_timeout' => $my_tasks_timer_timeout,
-            'my_tasks_calendar_timer_timeout' => $my_tasks_calendar_timer_timeout,
-        ];
+            [
+                'assigners'                       => $assigners,
+                'my_tasks_timer_timeout'          => $my_tasks_timer_timeout,
+                'my_tasks_calendar_timer_timeout' => $my_tasks_calendar_timer_timeout,
+            ];
+
         return view('laravel_task_manager::clients.tasks.my_tasks.index')->with($with);
     }
 
@@ -86,7 +87,9 @@ class MyTaskController extends Controller
             -1 == $filters['immediate'];
         if ($no_filters)
         {
-            $my_tasks = $user->my_tasks->with('subject')->with('assignment.assigner')->with('priority');
+            $my_tasks = $user->my_tasks->with('subject')->with(['assignment.assigner_alt' => function ($q) {
+                $q->select('id', 'user_type', 'username');
+            }])->with('priority');
         } else
         {
             if ($filters['title'])
@@ -102,8 +105,7 @@ class MyTaskController extends Controller
             }
             if ($filters['subject'])
             {
-                $my_tasks = $my_tasks->with('subject')->whereHas('subject', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->with('subject')->whereHas('subject', function ($query) use ($filters) {
                     $query->whereRaw('ltm_subjects.title LIKE ?', ["%$filters[subject]%"]);
                 });
             } else
@@ -112,28 +114,24 @@ class MyTaskController extends Controller
             }
             if (-1 != $filters['assigner'])
             {
-                $my_tasks = $my_tasks->with('assignment.assigner')->whereHas('assignment', function($query) use ($filters)
-                {
-                    $query->whereHas('assigner', function($query) use ($filters)
-                    {
+                $my_tasks = $my_tasks->with('assignment.assigner_alt')->whereHas('assignment', function ($query) use ($filters) {
+                    $query->whereHas('assigner_alt', function ($query) use ($filters) {
                         $query->where('ltm_task_assignments.assigner_id', $filters['assigner']);
                     });
                 });
             } else
             {
-                $my_tasks = $my_tasks->with('assignment.assigner');
+                $my_tasks = $my_tasks->with('assignment.assigner_alt');
             }
             if (-1 != $filters['status'])
             {
-                $my_tasks = $my_tasks->whereHas('assignments.statuses', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->whereHas('assignments.statuses', function ($query) use ($filters) {
                     $query->whereRaw('(SELECT MAX(status) FROM ltm_task_statuses AS task_statuses WHERE ltm_task_statuses.status = ?)', [$filters['status']]);
                 });
             }
             if (-1 != $filters['importance'])
             {
-                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function ($query) use ($filters) {
                     $query->where('ltm_task_priorities.importance', $filters['importance']);
                 });
             } else
@@ -142,8 +140,7 @@ class MyTaskController extends Controller
             }
             if (-1 != $filters['immediate'])
             {
-                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function ($query) use ($filters) {
                     $query->where('ltm_task_priorities.immediate', $filters['immediate']);
                 });
             } else
@@ -152,16 +149,13 @@ class MyTaskController extends Controller
             }
         }
         $r = Datatables::eloquent($my_tasks)
-            ->editColumn('id', function($data)
-            {
+            ->editColumn('id', function ($data) {
                 return ltm_encode_ids([$data->id]);
             })
-            ->addColumn('subject', function($data)
-            {
+            ->addColumn('subject', function ($data) {
                 return $data->subject->title;
             })
-            ->editColumn('title', function($data)
-            {
+            ->editColumn('title', function ($data) {
                 $route = route('ltm.modals.common.tasks.my_tasks.view');
                 $id = ltm_encode_ids([$data->id]);
                 $data_reload = true ? 'reload' : null;
@@ -169,36 +163,39 @@ class MyTaskController extends Controller
                 $data_title = 'مشاهده جزئیات' . ' ' . $data->title;
                 $title = $data->title . ($data->description ? " ({$data->description})" : null);
                 $r = "<a class='jsPanels' data-reload='$data_reload' data-href='$data_href' data-title='$data_title'>$title</a>";
+
                 return $r;
             })
-            ->addColumn('assigner', function($data)
-            {
-                return $data->assignment->assigner->full_name;
+            ->addColumn('assigner', function ($data) {
+                return $data->assignment->assigner_alt->full_name;
             })
-            ->addColumn('status', function($data)
-            {
+            ->addColumn('status', function ($data) {
                 /*
                 $current_status = $data->assignment->current_status;
                 $percent = ' (' . $current_status->percent . '%)';
                 return $current_status->status_name . (1 == $current_status->status ? $percent : null);
                 */
                 $percent = null;//' (' . $data->assignment->statuses->first()->percent . '%)';
+
                 return $data->assignment->current_status->status_name . (1 == $data->assignment->current_status->status ? $percent : null);
             })
-            ->addColumn('importance', function($data)
-            {
+            ->addColumn('importance', function ($data) {
                 return $data->employee_priority->importance;
             })
-            ->addColumn('immediate', function($data)
-            {
+            ->addColumn('immediate', function ($data) {
                 return $data->employee_priority->immediate;
             })
-            ->addColumn('visited', function($data)
-            {
-                return (bool) $data->assignment->visited;
+            ->addColumn('visited', function ($data) {
+                return (bool)$data->assignment->visited;
+            })
+            ->addColumn('last_employ', function ($data) {
+                $last_assign = TaskAssignment::where('task_id', $data->id)->orderBy('id', 'Desc')->with('employee_alt')->first();
+
+                return @$last_assign->employee_alt->full_name;
             })
             ->rawColumns(['title'])
             ->make(true);
+
         return $r;
     }
 
@@ -245,8 +242,7 @@ class MyTaskController extends Controller
             }
             if ($filters['subject'])
             {
-                $my_tasks = $my_tasks->with('subject')->whereHas('subject', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->with('subject')->whereHas('subject', function ($query) use ($filters) {
                     $query->whereRaw('ltm_subjects.title LIKE ?', ["%$filters[subject]%"]);
                 });
             } else
@@ -255,10 +251,8 @@ class MyTaskController extends Controller
             }
             if (-1 != $filters['assigner'])
             {
-                $my_tasks = $my_tasks->with('assignment.assigner')->whereHas('assignment', function($query) use ($filters)
-                {
-                    $query->whereHas('assigner', function($query) use ($filters)
-                    {
+                $my_tasks = $my_tasks->with('assignment.assigner')->whereHas('assignment', function ($query) use ($filters) {
+                    $query->whereHas('assigner', function ($query) use ($filters) {
                         $query->where('ltm_task_assignments.assigner_id', $filters['assigner']);
                     });
                 });
@@ -268,8 +262,7 @@ class MyTaskController extends Controller
             }
             if (-1 != $filters['importance'])
             {
-                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function ($query) use ($filters) {
                     $query->where('ltm_task_priorities.importance', (int)$filters['importance']);
                 });
             } else
@@ -278,8 +271,7 @@ class MyTaskController extends Controller
             }
             if (-1 != $filters['immediate'])
             {
-                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function($query) use ($filters)
-                {
+                $my_tasks = $my_tasks->with('priority')->whereHas('priority', function ($query) use ($filters) {
                     $query->where('ltm_task_priorities.immediate', $filters['immediate']);
                 });
             } else
@@ -297,16 +289,17 @@ class MyTaskController extends Controller
             $id = ltm_encode_ids([$my_task->id]);
             $assignment_id = ltm_encode_ids([$my_task->assignment->id]);
             $r[] =
-            [
-                'id' => $id,
-                'title' => $my_task->title,
-                'start' => $my_task->start_time,
-                'end' => $end,
-                'url' => route('ltm.modals.common.tasks.my_tasks.view') . "?id=$id&t=1&assignment_id=$assignment_id",
-                'background_color' => $my_task->subject->background_color,
-                'text_color' => $my_task->subject->text_color,
-            ];
+                [
+                    'id'               => $id,
+                    'title'            => $my_task->title,
+                    'start'            => $my_task->start_time,
+                    'end'              => $end,
+                    'url'              => route('ltm.modals.common.tasks.my_tasks.view') . "?id=$id&t=1&assignment_id=$assignment_id",
+                    'background_color' => $my_task->subject->background_color,
+                    'text_color'       => $my_task->subject->text_color,
+                ];
         }
+
         return response()->json($r);
     }
 
@@ -373,6 +366,7 @@ class MyTaskController extends Controller
             }
             $r[] = $row;
         }
+
         return $r;
     }
 
@@ -395,7 +389,7 @@ class MyTaskController extends Controller
                 TaskConfirmation::store($assignment->id);
                 if ($task_log_store)
                 {
-                    ltm_task_log_store($task_assignment->task_id, config('task_logs.types.modify.action.do.status'), null, ['old' => 2, 'old_percent' => 0, 'new' => 3, 'new_percent' => 0, 'by' => '-1', ]);
+                    ltm_task_log_store($task_assignment->task_id, config('task_logs.types.modify.action.do.status'), null, ['old' => 2, 'old_percent' => 0, 'new' => 3, 'new_percent' => 0, 'by' => '-1',]);
                 }
                 $this->make_status_automatically($assignment);
             } else
@@ -461,9 +455,9 @@ class MyTaskController extends Controller
             $action_transfer_messaging_users = $action_transfer_messaging_is_active && in_array('users', $action_transfer_messaging ? $action_transfer_messaging : []);
             $action_transfer_messaging_transcripts = $action_transfer_messaging_is_active && in_array('transcripts', $action_transfer_messaging ? $action_transfer_messaging : []);
             */
-            $action_transfer_transferable = (string) (int) (bool) $request->input('action_transfer_transferable', '0');
-            $action_transfer_end_on_assigner_accept = (string) (int) (bool) $request->input('action_transfer_end_on_assigner_accept', '0');
-            $action_transfer_rejectable = (string) (int) (bool) $request->input('action_transfer_rejectable', '0');
+            $action_transfer_transferable = (string)(int)(bool)$request->input('action_transfer_transferable', '0');
+            $action_transfer_end_on_assigner_accept = (string)(int)(bool)$request->input('action_transfer_end_on_assigner_accept', '0');
+            $action_transfer_rejectable = (string)(int)(bool)$request->input('action_transfer_rejectable', '0');
             // status
             switch ($action_type)
             {
@@ -478,7 +472,7 @@ class MyTaskController extends Controller
                                 [
                                     'old' => $action_do_importance_old,
                                     'new' => $action_do_importance,
-                                    'by' => auth()->id(),
+                                    'by'  => auth()->id(),
                                 ];
                             ltm_task_log_store($task_id, config('task_logs.types.modify.action.do.importance'), null, $description_values);
                         }
@@ -488,7 +482,7 @@ class MyTaskController extends Controller
                                 [
                                     'old' => $action_do_immediate_old,
                                     'new' => $action_do_immediate,
-                                    'by' => auth()->id(),
+                                    'by'  => auth()->id(),
                                 ];
                             ltm_task_log_store($task_id, config('task_logs.types.modify.action.do.immediate'), null, $description_values);
                         }
@@ -511,7 +505,7 @@ class MyTaskController extends Controller
                                 [
                                     'old' => $action_do_importance_old,
                                     'new' => $action_do_importance,
-                                    'by' => auth()->id(),
+                                    'by'  => auth()->id(),
                                 ];
                             ltm_task_log_store($task_id, config('task_logs.types.modify.action.do.importance'), null, $description_values);
                         }
@@ -521,7 +515,7 @@ class MyTaskController extends Controller
                                 [
                                     'old' => $action_do_immediate_old,
                                     'new' => $action_do_immediate,
-                                    'by' => auth()->id(),
+                                    'by'  => auth()->id(),
                                 ];
                             ltm_task_log_store($task_id, config('task_logs.types.modify.action.do.immediate'), null, $description_values);
                         }
@@ -531,11 +525,11 @@ class MyTaskController extends Controller
                         TaskStatus::store($task_assignment_id, TaskStatus::TYPE_EMPLOYEE, $action_do_status, $action_do_status_percent);
                         $description_values =
                             [
-                                'old' => $action_do_status_old,
+                                'old'         => $action_do_status_old,
                                 'old_percent' => $action_do_status_percent_old,
-                                'new' => $action_do_status,
+                                'new'         => $action_do_status,
                                 'new_percent' => $action_do_status_percent,
-                                'by' => auth()->id(),
+                                'by'          => auth()->id(),
                             ];
                         ltm_task_log_store($task_id, config('task_logs.types.modify.action.do.status'), 2 == $action_do_status ? $task_assignment_id : null, $description_values);
                         TaskConfirmation::store($task_assignment_id);
@@ -568,11 +562,20 @@ class MyTaskController extends Controller
                     $insert_assignment->integrated_task_id = 0;
                     $insert_assignment->rejected_at = null;
                     $insert_assignment->action_do_form_id = $action_transfer_do_form_id;
-                    if ($action_transfer_do_form_id) { $insert_assignment->action_do_fields_code = Form::generate_fields_code($action_transfer_do_form_id); }
+                    if ($action_transfer_do_form_id)
+                    {
+                        $insert_assignment->action_do_fields_code = Form::generate_fields_code($action_transfer_do_form_id);
+                    }
                     $insert_assignment->action_transfer_form_id = $action_transfer_transfer_form_id;
-                    if ($action_transfer_transfer_form_id) { $insert_assignment->action_transfer_fields_code = Form::generate_fields_code($action_transfer_transfer_form_id); }
+                    if ($action_transfer_transfer_form_id)
+                    {
+                        $insert_assignment->action_transfer_fields_code = Form::generate_fields_code($action_transfer_transfer_form_id);
+                    }
                     $insert_assignment->action_reject_form_id = $action_transfer_reject_form_id;
-                    if ($action_transfer_reject_form_id) { $insert_assignment->action_reject_fields_code = Form::generate_fields_code($action_transfer_reject_form_id); }
+                    if ($action_transfer_reject_form_id)
+                    {
+                        $insert_assignment->action_reject_fields_code = Form::generate_fields_code($action_transfer_reject_form_id);
+                    }
                     $insert_assignment->transferable = $action_transfer_transferable;
                     $insert_assignment->end_on_assigner_accept = $action_transfer_end_on_assigner_accept;
                     $insert_assignment->rejectable = $action_transfer_rejectable;
@@ -628,8 +631,8 @@ class MyTaskController extends Controller
                     $description_values =
                         [
                             'transmitter' => auth()->id(),
-                            'from' => $assignment->employee_id,
-                            'to' => $action_transfer_user,
+                            'from'        => $assignment->employee_id,
+                            'to'          => $action_transfer_user,
                             'transcripts' => serialize($description_values_transcripts),
                         ];
                     ltm_task_log_store($task_id, config('task_logs.types.modify.action.transfer'), $task_assignment_id, $description_values);
@@ -652,6 +655,7 @@ class MyTaskController extends Controller
             }
 
             DB::commit();
+
             return $this->action_success();
         } catch (\Exception $e)
         {
@@ -677,6 +681,15 @@ class MyTaskController extends Controller
         DB::beginTransaction();
         try
         {
+            $task = Task::find($request->task_id);
+            if ($task && !is_null($task->terminated_at))
+            {
+                return response()->json([
+                    'success' => false,
+                    'status'  => "-1",
+                    'message' => [['title' => 'خطا', 'items' => ['این وظیفه مختومه شده و امکان ارسال پیام وجود ندارد.']]]
+                ]);
+            }
             $assignment_id = ltm_decode_ids($request->input('assignment_id'), 0);
             $chat = new ClientChatHistory();
             $chat->assignment_id = $assignment_id;
@@ -685,28 +698,31 @@ class MyTaskController extends Controller
             $chat->user_id = auth()->id();
             $chat->save();
             $itemFile = LFM_SaveSingleFile($chat, 'file_id', 'attachment_track');
-            $chats = ClientChatHistory::with('user')->where('assignment_id',$assignment_id)->get() ;
-            $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar','png', 'jpg'], 'path' => 'task/chat', 'show_file_uploaded' => 'original'];
+            $chats = ClientChatHistory::with('user')->where('assignment_id', $assignment_id)->get();
+            $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['zip', 'rar', 'png', 'jpg'], 'path' => 'task/chat', 'show_file_uploaded' => 'original'];
             $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
-            $old_file = [] ;
+            $old_file = [];
 
-            $is_final_assigment = true ;
+            $is_final_assigment = true;
             $track_view = view('laravel_task_manager::modals.tasks.my_tasks.view.track')
-                ->with('chats',$chats)
-                ->with('file',$file)
-                ->with('old_file',json_encode($old_file))
-                ->with('is_final_assigment',$is_final_assigment)
-                ->with('assignment_id' , ltm_encode_ids([$assignment_id]))
+                ->with('chats', $chats)
+                ->with('file', $file)
+                ->with('old_file', json_encode($old_file))
+                ->with('is_final_assigment', $is_final_assigment)
+                ->with('assignment_id', ltm_encode_ids([$assignment_id]))
+                ->with('task_id', @$task->id)
+                ->with('task_terminate', ($task && $task->terminated_at) ? true : false)
                 ->render();
             $res =
                 [
-                    'success' => true,
-                    'track_view' => $track_view,
+                    'success'     => true,
+                    'track_view'  => $track_view,
                     'status_type' => 'success',
-                    'message' => 'با موفقیت انجام شد.',
-                    'reload' => true,
+                    'message'     => 'با موفقیت انجام شد.',
+                    'reload'      => true,
                 ];
             DB::commit();
+
             return response()->json($res);
         } catch (\Exception $e)
         {
@@ -733,12 +749,13 @@ class MyTaskController extends Controller
     function action_success()
     {
         $r =
-        [
-            'status' => true,
-            'status_type' => 'success',
-            'message' => 'با موفقیت انجام شد.',
-            'reload' => true,
-        ];
+            [
+                'status'      => true,
+                'status_type' => 'success',
+                'message'     => 'با موفقیت انجام شد.',
+                'reload'      => true,
+            ];
+
         return response()->json($r, 200)->withHeaders(['content-type' => 'text/plain', 'charset' => 'utf-8']);
     }
 
@@ -758,5 +775,39 @@ class MyTaskController extends Controller
                 Cookie::queue('my_tasks_calendar_timer_timeout', $seconds);
                 break;
         }
+    }
+
+    public function terminate(Request $request)
+    {
+        $task = Task::find($request->task_id);
+        if ($task && is_null($task->terminated_at))
+        {
+            $task->terminated_at = date('Y-m-d H:i:s');
+            $task->save();
+            $res =
+                [
+                    'success'     => true,
+                    'status_type' => 'success',
+                    'message'     => 'با موفقیت انجام شد.',
+                    'reload'      => false,
+                ];
+        } else
+        {
+            $msg = "این وظیفه قبلا مختومه شده است.";
+            if (!$task)
+            {
+                $msg = 'خطا در صحت اطلاعات';
+            }
+
+            $res =
+                [
+                    'success' => false,
+                    'status'  => "-1",
+                    'message' => [['title' => 'خطا درثبت اطلاعات:', 'items' => [$msg]]]
+                ];
+        }
+
+        return response()->json($res);
+
     }
 }

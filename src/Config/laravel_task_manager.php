@@ -9,6 +9,8 @@ return [
     'client_ltm_route_prefix'                        => env('LTM_CLIENT_ROUTE_PERFIX', 'ltm'),
     // ======================================================================
     'user_model'                                     => env('LTM_USER_MODEL', 'App\User'),
+    'user_model_alt'                                 => env('LTM_USER_MODEL_ALT', 'App\SameUser'),
+    'method_get_vin'                                 => env('LTM_METHOD_GET_VIN', 'get_request_vin'),
     'logout_route'                                   => env('LTM_LOGOUT_ROUTE', 'auth.sso.logout'),
     'site_dashboard_route'                           => env('SITE_DASHBOARD_ROUTE', 'backend.task.dashboard'),
     'site_create_task_route'                         => env('SITE_CREATE_TASK_ROUTE', 'backend.task.create_task'),

@@ -73,6 +73,14 @@
                     </tr>
                 @endif
                 <tr>
+                    <td class="col-md-2">VIN</td>
+                    <td class="col-md-10" colspan="4">{{ $task->vin }}</td>
+                </tr>
+                <tr>
+                    <td class="col-md-2">کد/شناسه ملی</td>
+                    <td class="col-md-10" colspan="4">{{ @$task->creator->national_id }}</td>
+                </tr>
+                <tr>
                     <td class="col-md-2">موضوع</td>
                     <td class="col-md-10" colspan="4">{!! $task->subject->title !!}</td>
                 </tr>
@@ -475,6 +483,7 @@
             </form>
         </div>
         <div id="response"  class="tab-pane">
+            <div id="form_message_box_message" class="form_message_area"></div>
             {!! $track_view !!}
         </div>
         <div id="history" class="tab-pane fade {!! 'history' == $default_tab ? 'in active' : null !!}">
