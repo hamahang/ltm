@@ -84,7 +84,7 @@
         {
             'searchable': false,
             'sortable': false,
-            'title': 'ارجاع دهنده',
+            'title': 'کاربر جاری',
             'data': 'last_employ',
             'name': 'last_employ'
         },
