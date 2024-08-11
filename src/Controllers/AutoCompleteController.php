@@ -88,7 +88,7 @@ class AutoCompleteController extends Controller
     public function users(Request $request)
     {
         $x = $request->term;
-        $data = config('laravel_task_manager.task_assigments_users_function_name')();
+        $data = config('laravel_task_manager.task_assigments_users_function_name')($x);
         $data = array('results' => $data);
         return response()->json($data);
     }
