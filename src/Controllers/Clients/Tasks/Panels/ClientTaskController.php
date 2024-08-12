@@ -220,7 +220,7 @@ class ClientTaskController extends Controller
         DB::beginTransaction();
         try
         {
-     
+
             // initialize variables for general
             $general_type = 1;
             $general_importance = $request->input('general_importance', false);
@@ -430,10 +430,17 @@ class ClientTaskController extends Controller
     public function getTrackingView(Request $request)
     {
         $assignment_id = ltm_decode_ids($request->input('item_id'), 0);
-        $chats = ClientChatHistory::with('user')->where('assignment_id', $assignment_id)->get();
         $user_id = config('laravel_task_manager.task_get_user_id')();
         $variable = $request->variable;
-        $assignment = TaskAssignment::with('confirmation')->find($assignment_id);
+        $assignment = TaskAssignment::with('confirmation')->where('assigner_id', $user_id)->find($assignment_id);
+        if (!$assignment)
+        {
+            return [
+                'success' => false,
+                'view'    => '<div class="p-4">پیگیری این درخواست برای شما امکان پذیر نیست</div>',
+            ];
+        }
+        $chats = ClientChatHistory::with('user')->where('assignment_id', $assignment_id)->get();
         $task = Task::where('id', $assignment->task_id)->with('subject', 'assignment.assigner', 'assignment.employee', 'priority', 'keywords', 'logs')->first();
         $LFM_options = ['size_file' => 1000 * 1000 * 4, 'max_file_number' => 1, 'true_file_extension' => ['jpg', 'jpeg', 'png', 'bmp', 'txt', 'xlsx', 'doc', 'docx', 'zip', 'rar'], 'path' => 'task/chat', 'show_file_uploaded' => 'small'];
         $file = LFM_CreateModalUpload('attachment_track', 'callback_track', $LFM_options, 'result_track', 'UploadFileManager_Track', false, 'result_track_button', 'آپلود فایل')['json'];
@@ -468,6 +475,15 @@ class ClientTaskController extends Controller
         {
             $user_id = config('laravel_task_manager.task_get_user_id')();
             $assignment_id = ltm_decode_ids($request->input('assignment_id'), 0);
+            $assignment = TaskAssignment::where('assigner_id', $user_id)->find($assignment_id);
+            if (!$assignment)
+            {
+                return [
+                    'success' => false,
+                    'status'  => "-1",
+                    'message' => [['title' => 'خطا:', 'items' => ['ارسال پیام برای این درخواست توسط شما امکان پذیر نیست']]]
+                ];
+            }
             $chat = new ClientChatHistory();
             $chat->assignment_id = $assignment_id;
             $chat->description = $request->description;

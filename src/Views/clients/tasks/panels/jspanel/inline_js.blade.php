@@ -322,15 +322,11 @@
                 variable: '{{$variable}}',
             },
             success: function (data) {
-                if (data.success) {
-                    $('#task_tracing').html(data.view);
-                    $('#li_task_tracking').removeClass('hidden');
-                    $('a[href="#task_tracing"]').tab('show');
-                    $('a[href="#task_tracing"]').click();
-                    $('#btn_insert_track_task_{{$variable}}').removeClass('hidden');
-                } else {
-
-                }
+                $('#task_tracing').html(data.view);
+                $('#li_task_tracking').removeClass('hidden');
+                $('a[href="#task_tracing"]').tab('show');
+                $('a[href="#task_tracing"]').click();
+                $('#btn_insert_track_task_{{$variable}}').removeClass('hidden');
             }
         }).fail(function (result) {
             alert('خطای ' + result.statusText);
